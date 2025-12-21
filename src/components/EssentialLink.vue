@@ -1,9 +1,9 @@
 <template>
   <q-item
     clickable
-    tag="a"
-    target="_blank"
-    :href="link"
+    tag="router-link"
+    :to="link"
+    @click="onClick"
   >
     <q-item-section
       v-if="icon"
@@ -25,6 +25,7 @@ export interface EssentialLinkProps {
   caption?: string;
   link?: string;
   icon?: string;
+  onClick?: () => void;
 };
 
 withDefaults(defineProps<EssentialLinkProps>(), {

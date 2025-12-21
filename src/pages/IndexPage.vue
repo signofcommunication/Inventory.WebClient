@@ -1,43 +1,43 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <example-component
-      title="Example component"
-      active
-      :todos="todos"
-      :meta="meta"
-    ></example-component>
+  <q-page class="q-pa-md">
+    <div class="text-h4 q-mb-lg">Inventory Information System Dashboard</div>
+
+    <div class="row q-gutter-md">
+      <q-card class="col-12 col-md-4" @click="$router.push('/items')" style="cursor: pointer">
+        <q-card-section>
+          <div class="text-h6">Items Management</div>
+          <div class="text-subtitle2">Manage inventory items, add, edit, delete</div>
+        </q-card-section>
+        <q-card-section>
+          <q-icon name="inventory" size="4em" color="primary" />
+        </q-card-section>
+      </q-card>
+
+      <q-card class="col-12 col-md-4" @click="$router.push('/categories')" style="cursor: pointer">
+        <q-card-section>
+          <div class="text-h6">Categories</div>
+          <div class="text-subtitle2">Manage item categories</div>
+        </q-card-section>
+        <q-card-section>
+          <q-icon name="category" size="4em" color="primary" />
+        </q-card-section>
+      </q-card>
+
+      <q-card class="col-12 col-md-4" @click="$router.push('/reports')" style="cursor: pointer">
+        <q-card-section>
+          <div class="text-h6">Reports</div>
+          <div class="text-subtitle2">View inventory reports</div>
+        </q-card-section>
+        <q-card-section>
+          <q-icon name="bar_chart" size="4em" color="primary" />
+        </q-card-section>
+      </q-card>
+    </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import type { Todo, Meta } from 'components/models';
-import ExampleComponent from 'components/ExampleComponent.vue';
+import { useRouter } from 'vue-router';
 
-const todos = ref<Todo[]>([
-  {
-    id: 1,
-    content: 'ct1'
-  },
-  {
-    id: 2,
-    content: 'ct2'
-  },
-  {
-    id: 3,
-    content: 'ct3'
-  },
-  {
-    id: 4,
-    content: 'ct4'
-  },
-  {
-    id: 5,
-    content: 'ct5'
-  }
-]);
-
-const meta = ref<Meta>({
-  totalCount: 1200
-});
+const $router = useRouter();
 </script>
