@@ -3,9 +3,20 @@
     <div class="text-h4 q-mb-lg">Data Barang</div>
     <div class="text-body1 q-mb-xl">Manage inventory items</div>
 
-    <q-btn label="Tambah Barang" color="primary" @click="openAddDialog" class="q-mb-md" />
+    <q-btn
+      v-if="hasRole(['SUPERADMIN', 'ADMIN'])"
+      label="Tambah Barang"
+      color="primary"
+      @click="openAddDialog"
+      class="q-mb-md"
+    />
 
-    <ItemTable :items="itemStore.items" :loading="itemStore.loading" @edit="openEditDialog" />
+    <ItemTable
+      :items="itemStore.items"
+      :loading="itemStore.loading"
+      @edit="openEditDialog"
+      @delete="onDelete"
+    />
 
     <q-dialog v-model="dialogOpen">
       <q-card style="min-width: 400px">
@@ -23,6 +34,19 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+
+    <q-dialog v-model="showDeleteDialog" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <span class="q-ml-sm">Are you sure you want to delete this item?</span>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn flat label="Delete" color="negative" @click="confirmDelete" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -32,45 +56,100 @@ import { useItemStore } from '../store';
 import ItemTable from '../components/ItemTable.vue';
 import ItemForm from '../components/ItemForm.vue';
 import type { ItemForm as ItemFormData } from '../types';
+import { Notify } from 'quasar';
+import { hasRole } from '../../../shared/permissions';
+import { useCategoriesStore } from '../../categories/store';
 
 const itemStore = useItemStore();
+const categoriesStore = useCategoriesStore();
 
 onMounted(() => {
   itemStore.fetchItems();
+  categoriesStore.fetchCategories();
 });
 
 const dialogOpen = ref(false);
 const isEdit = ref(false);
+const showDeleteDialog = ref(false);
+const selectedItemToDelete = ref<any>(null);
 const formData = reactive<ItemFormData>({
-  name: '',
-  stock: 0,
+  kodeBarang: '',
+  namaBarang: '',
+  kategoriId: null,
+  quantity: 0,
+  unit: '',
+  fotoBarang: null,
 });
 
 const openAddDialog = () => {
+  if (!hasRole(['SUPERADMIN', 'ADMIN'])) {
+    Notify.create({ type: 'negative', message: 'Unauthorized' });
+    return;
+  }
   isEdit.value = false;
-  formData.name = '';
-  formData.stock = 0;
+  formData.kodeBarang = '';
+  formData.namaBarang = '';
+  formData.kategoriId = null;
+  formData.quantity = 0;
+  formData.unit = '';
+  formData.fotoBarang = null;
+  formData.kategoriId = null;
   dialogOpen.value = true;
 };
 
 const openEditDialog = (item: any) => {
+  if (!hasRole(['SUPERADMIN', 'ADMIN'])) {
+    Notify.create({ type: 'negative', message: 'Unauthorized' });
+    return;
+  }
   isEdit.value = true;
-  formData.name = item.name;
-  formData.stock = item.quantity; // Map quantity to stock
+  formData.kodeBarang = item.kodeBarang;
+  formData.namaBarang = item.namaBarang;
+  formData.kategoriId = item.kategoriId;
+  formData.quantity = item.quantity;
+  formData.unit = item.unit;
+  formData.fotoBarang = null; // For edit, don't set file, but preview will show existing
   itemStore.selectItem(item);
   dialogOpen.value = true;
 };
 
-const onSubmit = (data: ItemFormData) => {
-  if (isEdit.value && itemStore.selectedItem) {
-    itemStore.updateItem(itemStore.selectedItem.id, {
-      name: data.name,
-      quantity: data.stock, // Map stock back to quantity for update
-    });
-  } else {
-    itemStore.createItem(data);
+const onSubmit = async (data: FormData) => {
+  try {
+    if (isEdit.value && itemStore.selectedItem) {
+      await itemStore.updateItem(itemStore.selectedItem.id, data);
+      Notify.create({ type: 'positive', message: 'Item updated successfully' });
+    } else {
+      await itemStore.createItem(data);
+      Notify.create({ type: 'positive', message: 'Item created successfully' });
+    }
+    closeDialog();
+  } catch (error: any) {
+    Notify.create({ type: 'negative', message: error.response?.data?.message || 'Error occurred' });
   }
-  closeDialog();
+};
+
+const onDelete = async (item: any) => {
+  if (!hasRole(['SUPERADMIN', 'ADMIN'])) {
+    Notify.create({ type: 'negative', message: 'Unauthorized' });
+    return;
+  }
+  selectedItemToDelete.value = item;
+  showDeleteDialog.value = true;
+};
+
+const confirmDelete = async () => {
+  if (!selectedItemToDelete.value) return;
+  try {
+    await itemStore.deleteItem(selectedItemToDelete.value.id);
+    Notify.create({ type: 'positive', message: 'Item deleted successfully' });
+    showDeleteDialog.value = false;
+    selectedItemToDelete.value = null;
+  } catch (error: any) {
+    Notify.create({
+      type: 'negative',
+      message: error.response?.data?.message || 'Error occurred',
+    });
+  }
 };
 
 const closeDialog = () => {

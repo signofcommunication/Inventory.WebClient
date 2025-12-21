@@ -13,7 +13,11 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
       { path: 'items', component: () => import('pages/ItemsPage.vue') },
-      { path: 'categories', component: () => import('pages/CategoriesPage.vue') },
+      {
+        path: 'categories',
+        component: () => import('src/features/categories/pages/CategoriesPage.vue'),
+        meta: { requiresAuth: true, roles: ['SUPERADMIN', 'ADMIN'] },
+      },
       { path: 'reports', component: () => import('pages/ReportsPage.vue') },
       {
         path: 'dashboard',

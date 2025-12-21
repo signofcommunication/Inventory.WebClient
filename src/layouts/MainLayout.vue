@@ -63,6 +63,12 @@ const linksList: MenuItem[] = [
     roles: [], // all
   },
   {
+    title: 'Kategori Barang',
+    link: '/categories',
+    icon: 'category',
+    roles: ['SUPERADMIN', 'ADMIN'],
+  },
+  {
     title: 'Data Barang',
     link: '/inventory',
     icon: 'inventory',

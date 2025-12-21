@@ -1,14 +1,19 @@
 export interface Item {
   id: number;
-  code: string;
-  name: string;
-  description: string;
-  category: string;
+  kodeBarang: string;
+  namaBarang: string;
+  kategoriId: number;
+  kategori?: { id: number; name: string };
   quantity: number;
   unit: string;
+  fotoBarang?: string;
 }
 
 export interface ItemForm {
-  name: string;
-  stock: number;
+  kodeBarang: string;
+  namaBarang: string;
+  kategoriId: number | null;
+  quantity: number;
+  unit: string;
+  fotoBarang?: File | null;
 }
