@@ -1,18 +1,14 @@
 <template>
   <q-form @submit="onSubmit" class="q-gutter-md">
-    <q-input
-      v-model="form.itemCode"
-      label="Item Code"
+    <q-select
+      v-model="form.itemId"
+      :options="items"
+      option-value="id"
+      option-label="name"
+      label="Item"
       outlined
       required
-      :rules="[(val) => !!val || 'Item Code is required']"
-    />
-    <q-input
-      v-model="form.itemName"
-      label="Item Name"
-      outlined
-      required
-      :rules="[(val) => !!val || 'Item Name is required']"
+      :rules="[(val) => !!val || 'Item is required']"
     />
     <q-input
       v-model="form.borrower"
@@ -30,22 +26,15 @@
       :rules="[(val) => val > 0 || 'Quantity must be greater than 0']"
     />
     <q-input
-      v-model="form.loanDate"
-      label="Loan Date"
+      v-model="form.returnDate"
+      label="Return Date"
       type="date"
       outlined
       required
-      :rules="[(val) => !!val || 'Loan Date is required']"
+      :rules="[(val) => !!val || 'Return Date is required']"
     />
-    <q-input v-model="form.returnDate" label="Return Date" type="date" outlined />
-    <q-input v-model="form.note" label="Note" type="textarea" outlined />
     <div class="q-gutter-sm">
-      <q-btn
-        type="submit"
-        :label="isEdit ? 'Update' : 'Simpan'"
-        color="primary"
-        :loading="loading"
-      />
+      <q-btn type="submit" label="Create Loan" color="primary" :loading="loading" />
       <q-btn flat label="Cancel" @click="onCancel" />
     </div>
   </q-form>
@@ -55,9 +44,14 @@
 import { ref, watch } from 'vue';
 import type { LoanForm } from '../types';
 
+interface Item {
+  id: number;
+  name: string;
+}
+
 interface Props {
   modelValue: LoanForm;
-  isEdit: boolean;
+  items: Item[];
   loading?: boolean;
 }
 

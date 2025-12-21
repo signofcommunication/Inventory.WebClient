@@ -5,17 +5,17 @@
 
     <q-btn label="Tambah Peminjaman" color="primary" @click="openAddDialog" class="q-mb-md" />
 
-    <LoanTable :loans="loanStore.loans" :loading="loanStore.loading" @edit="openEditDialog" />
+    <LoanTable :loans="loanStore.loans" :loading="loanStore.loading" @delete="onDelete" />
 
     <q-dialog v-model="dialogOpen">
       <q-card style="min-width: 400px">
         <q-card-section>
-          <div class="text-h6">{{ isEdit ? 'Edit Loan' : 'Add Loan' }}</div>
+          <div class="text-h6">Add Loan</div>
         </q-card-section>
         <q-card-section>
           <LoanForm
             :model-value="formData"
-            :is-edit="isEdit"
+            :items="loanStore.items"
             :loading="loanStore.loading"
             @submit="onSubmit"
             @cancel="closeDialog"
@@ -27,7 +27,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
+import { Notify } from 'quasar';
 import { useLoanStore } from './store';
 import LoanTable from './components/LoanTable.vue';
 import LoanForm from './components/LoanForm.vue';
@@ -36,53 +37,46 @@ import type { LoanForm as LoanFormData } from './types';
 const loanStore = useLoanStore();
 
 const dialogOpen = ref(false);
-const isEdit = ref(false);
 const formData = reactive<LoanFormData>({
-  itemCode: '',
-  itemName: '',
+  itemId: 0,
   borrower: '',
   quantity: 0,
-  loanDate: '',
   returnDate: '',
-  note: '',
+});
+
+onMounted(() => {
+  loanStore.fetchLoans();
+  loanStore.fetchItems();
 });
 
 const openAddDialog = () => {
-  isEdit.value = false;
-  formData.itemCode = '';
-  formData.itemName = '';
+  formData.itemId = 0;
   formData.borrower = '';
   formData.quantity = 0;
-  formData.loanDate = '';
   formData.returnDate = '';
-  formData.note = '';
   dialogOpen.value = true;
 };
 
-const openEditDialog = (loan: any) => {
-  isEdit.value = true;
-  formData.itemCode = loan.itemCode;
-  formData.itemName = loan.itemName;
-  formData.borrower = loan.borrower;
-  formData.quantity = loan.quantity;
-  formData.loanDate = loan.loanDate;
-  formData.returnDate = loan.returnDate;
-  formData.note = loan.note;
-  loanStore.selectLoan(loan);
-  dialogOpen.value = true;
-};
-
-const onSubmit = (data: LoanFormData) => {
-  if (isEdit.value && loanStore.selectedLoan) {
-    loanStore.updateLoan(loanStore.selectedLoan.id, data);
-  } else {
-    loanStore.createLoan(data);
+const onSubmit = async (data: LoanFormData) => {
+  try {
+    await loanStore.createLoan(data);
+    Notify.create({ type: 'positive', message: 'Loan created successfully' });
+    closeDialog();
+  } catch (error) {
+    Notify.create({ type: 'negative', message: 'Error saving loan' });
   }
-  closeDialog();
+};
+
+const onDelete = async (loan: any) => {
+  try {
+    await loanStore.deleteLoan(loan.id);
+    Notify.create({ type: 'positive', message: 'Loan deleted successfully' });
+  } catch (error) {
+    Notify.create({ type: 'negative', message: 'Error deleting loan' });
+  }
 };
 
 const closeDialog = () => {
   dialogOpen.value = false;
-  loanStore.selectLoan(null);
 };
 </script>
