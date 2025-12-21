@@ -5,21 +5,18 @@
 
     <q-btn label="Tambah Barang Masuk" color="primary" @click="openAddDialog" class="q-mb-md" />
 
-    <StockInTable
-      :items="transactionStore.stockInList"
-      :loading="transactionStore.loading"
-      @edit="openEditDialog"
-    />
+    <StockInTable :stockIns="transactionStore.stockIns" :loading="transactionStore.loading" />
 
     <q-dialog v-model="dialogOpen">
       <q-card style="min-width: 400px">
         <q-card-section>
-          <div class="text-h6">{{ isEdit ? 'Edit Stock In' : 'Add Stock In' }}</div>
+          <div class="text-h6">Add Stock In</div>
         </q-card-section>
         <q-card-section>
           <StockInForm
             :model-value="formData"
-            :is-edit="isEdit"
+            :items="transactionStore.items"
+            :suppliers="transactionStore.suppliers"
             :loading="transactionStore.loading"
             @submit="onSubmit"
             @cancel="closeDialog"
@@ -31,59 +28,51 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
+import { Notify } from 'quasar';
 import { useTransactionStore } from '../store';
 import StockInTable from '../components/StockInTable.vue';
 import StockInForm from '../components/StockInForm.vue';
-import type { StockInForm as StockInFormData } from '../types';
+import type { StockInFormData } from '../types';
 
 const transactionStore = useTransactionStore();
 
 const dialogOpen = ref(false);
-const isEdit = ref(false);
 const formData = reactive<StockInFormData>({
-  itemCode: '',
-  itemName: '',
-  quantity: 0,
-  date: '',
-  note: '',
-  supplier: '',
+  item: null,
+  supplier: null,
+  qty: 0,
+});
+
+onMounted(() => {
+  transactionStore.fetchStockIn();
+  transactionStore.fetchItems();
+  transactionStore.fetchSuppliers();
 });
 
 const openAddDialog = () => {
-  isEdit.value = false;
-  formData.itemCode = '';
-  formData.itemName = '';
-  formData.quantity = 0;
-  formData.date = '';
-  formData.note = '';
-  formData.supplier = '';
+  formData.item = null;
+  formData.supplier = null;
+  formData.qty = 0;
   dialogOpen.value = true;
 };
 
-const openEditDialog = (item: any) => {
-  isEdit.value = true;
-  formData.itemCode = item.itemCode;
-  formData.itemName = item.itemName;
-  formData.quantity = item.quantity;
-  formData.date = item.date;
-  formData.note = item.note;
-  formData.supplier = item.supplier;
-  transactionStore.selectInItem(item);
-  dialogOpen.value = true;
-};
-
-const onSubmit = (data: StockInFormData) => {
-  if (isEdit.value && transactionStore.selectedInItem) {
-    transactionStore.updateStockIn(transactionStore.selectedInItem.id, data);
-  } else {
-    transactionStore.createStockIn(data);
+const onSubmit = async (data: StockInFormData) => {
+  try {
+    const payload = {
+      itemId: data.item?.id || 0,
+      supplierId: data.supplier?.id || 0,
+      qty: data.qty,
+    };
+    await transactionStore.createStockIn(payload);
+    Notify.create({ type: 'positive', message: 'Stock In created successfully' });
+    closeDialog();
+  } catch (error) {
+    Notify.create({ type: 'negative', message: 'Error creating stock in' });
   }
-  closeDialog();
 };
 
 const closeDialog = () => {
   dialogOpen.value = false;
-  transactionStore.selectInItem(null);
 };
 </script>
