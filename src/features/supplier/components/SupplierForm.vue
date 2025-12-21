@@ -1,27 +1,18 @@
 <template>
   <q-form @submit="onSubmit" class="q-gutter-md">
     <q-input
-      v-model="form.code"
-      label="Code"
-      outlined
-      required
-      :rules="[(val) => !!val || 'Code is required']"
-    />
-    <q-input
       v-model="form.name"
       label="Name"
       outlined
       required
       :rules="[(val) => !!val || 'Name is required']"
     />
-    <q-input v-model="form.contact" label="Contact Person" outlined />
-    <q-input v-model="form.address" label="Address" type="textarea" outlined />
-    <q-input v-model="form.email" label="Email" type="email" outlined />
     <q-input v-model="form.phone" label="Phone" outlined />
+    <q-input v-model="form.address" label="Address" type="textarea" outlined />
     <div class="q-gutter-sm">
       <q-btn
         type="submit"
-        :label="isEdit ? 'Update' : 'Simpan'"
+        :label="isEdit ? 'Update' : 'Create'"
         color="primary"
         :loading="loading"
       />
@@ -60,7 +51,12 @@ watch(
 );
 
 const onSubmit = () => {
-  emit('submit', form.value);
+  const payload: SupplierForm = {
+    name: form.value.name,
+    ...(form.value.phone && { phone: form.value.phone }),
+    ...(form.value.address && { address: form.value.address }),
+  };
+  emit('submit', payload);
 };
 
 const onCancel = () => {

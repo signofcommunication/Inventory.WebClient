@@ -9,6 +9,7 @@
       :suppliers="supplierStore.suppliers"
       :loading="supplierStore.loading"
       @edit="openEditDialog"
+      @delete="onDelete"
     />
 
     <q-dialog v-model="dialogOpen">
@@ -31,7 +32,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
+import { Notify } from 'quasar';
 import { useSupplierStore } from '../store';
 import SupplierTable from '../components/SupplierTable.vue';
 import SupplierForm from '../components/SupplierForm.vue';
@@ -42,44 +44,54 @@ const supplierStore = useSupplierStore();
 const dialogOpen = ref(false);
 const isEdit = ref(false);
 const formData = reactive<SupplierFormData>({
-  code: '',
   name: '',
-  contact: '',
-  address: '',
-  email: '',
   phone: '',
+  address: '',
+});
+
+onMounted(() => {
+  supplierStore.fetchSuppliers();
 });
 
 const openAddDialog = () => {
   isEdit.value = false;
-  formData.code = '';
   formData.name = '';
-  formData.contact = '';
-  formData.address = '';
-  formData.email = '';
   formData.phone = '';
+  formData.address = '';
   dialogOpen.value = true;
 };
 
 const openEditDialog = (supplier: any) => {
   isEdit.value = true;
-  formData.code = supplier.code;
   formData.name = supplier.name;
-  formData.contact = supplier.contact;
-  formData.address = supplier.address;
-  formData.email = supplier.email;
-  formData.phone = supplier.phone;
+  formData.phone = supplier.phone || '';
+  formData.address = supplier.address || '';
   supplierStore.selectSupplier(supplier);
   dialogOpen.value = true;
 };
 
-const onSubmit = (data: SupplierFormData) => {
-  if (isEdit.value && supplierStore.selectedSupplier) {
-    supplierStore.updateSupplier(supplierStore.selectedSupplier.id, data);
-  } else {
-    supplierStore.createSupplier(data);
+const onSubmit = async (data: SupplierFormData) => {
+  try {
+    if (isEdit.value && supplierStore.selectedSupplier) {
+      await supplierStore.updateSupplier(supplierStore.selectedSupplier.id, data);
+      Notify.create({ type: 'positive', message: 'Supplier updated successfully' });
+    } else {
+      await supplierStore.createSupplier(data);
+      Notify.create({ type: 'positive', message: 'Supplier created successfully' });
+    }
+    closeDialog();
+  } catch (error) {
+    Notify.create({ type: 'negative', message: 'Error saving supplier' });
   }
-  closeDialog();
+};
+
+const onDelete = async (supplier: any) => {
+  try {
+    await supplierStore.deleteSupplier(supplier.id);
+    Notify.create({ type: 'positive', message: 'Supplier deleted successfully' });
+  } catch (error) {
+    Notify.create({ type: 'negative', message: 'Error deleting supplier' });
+  }
 };
 
 const closeDialog = () => {

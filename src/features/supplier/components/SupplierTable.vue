@@ -3,6 +3,7 @@
     <template #body-cell-actions="props">
       <q-td :props="props">
         <q-btn flat round icon="edit" color="primary" @click="editSupplier(props.row)" />
+        <q-btn flat round icon="delete" color="negative" @click="deleteSupplier(props.row)" />
       </q-td>
     </template>
   </q-table>
@@ -22,19 +23,21 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   edit: [supplier: Supplier];
+  delete: [supplier: Supplier];
 }>();
 
 const columns = [
-  { name: 'code', label: 'Code', field: 'code', align: 'left' as const },
   { name: 'name', label: 'Name', field: 'name', align: 'left' as const },
-  { name: 'contact', label: 'Contact', field: 'contact', align: 'left' as const },
-  { name: 'address', label: 'Address', field: 'address', align: 'left' as const },
-  { name: 'email', label: 'Email', field: 'email', align: 'left' as const },
   { name: 'phone', label: 'Phone', field: 'phone', align: 'left' as const },
+  { name: 'address', label: 'Address', field: 'address', align: 'left' as const },
   { name: 'actions', label: 'Actions', field: '', align: 'center' as const },
 ];
 
 const editSupplier = (supplier: Supplier) => {
   emit('edit', supplier);
+};
+
+const deleteSupplier = (supplier: Supplier) => {
+  emit('delete', supplier);
 };
 </script>
