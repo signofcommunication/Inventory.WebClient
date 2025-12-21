@@ -6,6 +6,8 @@ import {
   createWebHistory,
 } from 'vue-router';
 import routes from './routes';
+import { useAuthStore } from 'src/features/auth/store';
+import { hasRole } from 'src/shared/permissions';
 
 /*
  * If not building with SSR mode, you can
@@ -19,7 +21,9 @@ import routes from './routes';
 export default defineRouter(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
-    : (process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory);
+    : process.env.VUE_ROUTER_MODE === 'history'
+      ? createWebHistory
+      : createWebHashHistory;
 
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
@@ -29,6 +33,35 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE),
+  });
+
+  Router.beforeEach((to, from, next) => {
+    const authStore = useAuthStore();
+
+    console.log('Router guard: to', to.path, 'from', from.path);
+    console.log('Authenticated:', authStore.isAuthenticated, 'User:', authStore.user);
+
+    // Load user from storage if not loaded
+    if (!authStore.isAuthenticated) {
+      authStore.loadUserFromStorage();
+      console.log('Loaded from storage, now authenticated:', authStore.isAuthenticated);
+    }
+
+    const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+    const requiredRoles = to.meta.roles as string[] | undefined;
+
+    console.log('Requires auth:', requiresAuth, 'Required roles:', requiredRoles);
+
+    if (requiresAuth && !authStore.isAuthenticated) {
+      console.log('Redirecting to /login');
+      next('/login');
+    } else if (requiredRoles && !hasRole(requiredRoles)) {
+      console.log('Redirecting to /403');
+      next('/403');
+    } else {
+      console.log('Allowing navigation');
+      next();
+    }
   });
 
   return Router;
