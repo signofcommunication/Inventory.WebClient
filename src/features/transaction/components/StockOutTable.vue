@@ -1,18 +1,13 @@
 <template>
-  <q-table :rows="items" :columns="columns" row-key="id" :loading="loading" class="q-mb-md">
-    <template #body-cell-actions="props">
-      <q-td :props="props">
-        <q-btn flat round icon="edit" color="primary" @click="editItem(props.row)" />
-      </q-td>
-    </template>
+  <q-table :rows="stockOuts" :columns="columns" row-key="id" :loading="loading" class="q-mb-md">
   </q-table>
 </template>
 
 <script setup lang="ts">
-import type { StockOutItem } from '../types';
+import type { StockOut } from '../types';
 
 interface Props {
-  items: StockOutItem[];
+  stockOuts: StockOut[];
   loading?: boolean;
 }
 
@@ -20,20 +15,10 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false,
 });
 
-const emit = defineEmits<{
-  edit: [item: StockOutItem];
-}>();
-
 const columns = [
-  { name: 'itemCode', label: 'Item Code', field: 'itemCode', align: 'left' as const },
-  { name: 'itemName', label: 'Item Name', field: 'itemName', align: 'left' as const },
+  { name: 'itemId', label: 'Item ID', field: 'itemId', align: 'left' as const },
   { name: 'quantity', label: 'Quantity', field: 'quantity', align: 'right' as const },
+  { name: 'borrower', label: 'Borrower', field: 'borrower', align: 'left' as const },
   { name: 'date', label: 'Date', field: 'date', align: 'left' as const },
-  { name: 'note', label: 'Note', field: 'note', align: 'left' as const },
-  { name: 'actions', label: 'Actions', field: '', align: 'center' as const },
 ];
-
-const editItem = (item: StockOutItem) => {
-  emit('edit', item);
-};
 </script>
