@@ -1,35 +1,49 @@
-export interface StockOutItem {
+export interface StockOut {
   id: number;
-  itemCode: string;
-  itemName: string;
+  itemId: number;
   quantity: number;
+  borrower: string;
   date: string;
-  note: string;
 }
 
 export interface StockOutForm {
-  itemCode: string;
-  itemName: string;
+  itemId: number;
   quantity: number;
-  date: string;
-  note: string;
+  borrower: string;
 }
 
-export interface StockInItem {
+export interface StockIn {
   id: number;
-  itemCode: string;
-  itemName: string;
-  quantity: number;
+  itemId: number;
+  supplierId: number;
+  qty: number;
   date: string;
-  note: string;
-  supplier: string;
 }
 
 export interface StockInForm {
-  itemCode: string;
-  itemName: string;
-  quantity: number;
-  date: string;
-  note: string;
-  supplier: string;
+  itemId: number;
+  supplierId: number;
+  qty: number;
+}
+
+interface Item {
+  id: number;
+  name: string;
+}
+
+interface Supplier {
+  id: number;
+  name: string;
+}
+
+export interface StockInFormData {
+  item: Item | null;
+  supplier: Supplier | null;
+  qty: number;
+}
+
+export interface StockOutFormData {
+  item: Item | null;
+  qty: number;
+  borrower: string;
 }
