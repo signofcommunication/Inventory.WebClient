@@ -5,11 +5,7 @@
 
     <q-btn label="Tambah Barang" color="primary" @click="openAddDialog" class="q-mb-md" />
 
-    <ItemTable
-      :items="inventoryStore.items"
-      :loading="inventoryStore.loading"
-      @edit="openEditDialog"
-    />
+    <ItemTable :items="itemStore.items" :loading="itemStore.loading" @edit="openEditDialog" />
 
     <q-dialog v-model="dialogOpen">
       <q-card style="min-width: 400px">
@@ -20,7 +16,7 @@
           <ItemForm
             :model-value="formData"
             :is-edit="isEdit"
-            :loading="inventoryStore.loading"
+            :loading="itemStore.loading"
             @submit="onSubmit"
             @cancel="closeDialog"
           />
@@ -31,59 +27,54 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
-import { useInventoryStore } from '../store';
+import { ref, reactive, onMounted } from 'vue';
+import { useItemStore } from '../store';
 import ItemTable from '../components/ItemTable.vue';
 import ItemForm from '../components/ItemForm.vue';
 import type { ItemForm as ItemFormData } from '../types';
 
-const inventoryStore = useInventoryStore();
+const itemStore = useItemStore();
+
+onMounted(() => {
+  itemStore.fetchItems();
+});
 
 const dialogOpen = ref(false);
 const isEdit = ref(false);
 const formData = reactive<ItemFormData>({
-  code: '',
   name: '',
-  description: '',
-  category: '',
-  quantity: 0,
-  unit: '',
+  stock: 0,
 });
 
 const openAddDialog = () => {
   isEdit.value = false;
-  formData.code = '';
   formData.name = '';
-  formData.description = '';
-  formData.category = '';
-  formData.quantity = 0;
-  formData.unit = '';
+  formData.stock = 0;
   dialogOpen.value = true;
 };
 
 const openEditDialog = (item: any) => {
   isEdit.value = true;
-  formData.code = item.code;
   formData.name = item.name;
-  formData.description = item.description;
-  formData.category = item.category;
-  formData.quantity = item.quantity;
-  formData.unit = item.unit;
-  inventoryStore.selectItem(item);
+  formData.stock = item.quantity; // Map quantity to stock
+  itemStore.selectItem(item);
   dialogOpen.value = true;
 };
 
 const onSubmit = (data: ItemFormData) => {
-  if (isEdit.value && inventoryStore.selectedItem) {
-    inventoryStore.updateItem(inventoryStore.selectedItem.id, data);
+  if (isEdit.value && itemStore.selectedItem) {
+    itemStore.updateItem(itemStore.selectedItem.id, {
+      name: data.name,
+      quantity: data.stock, // Map stock back to quantity for update
+    });
   } else {
-    inventoryStore.createItem(data);
+    itemStore.createItem(data);
   }
   closeDialog();
 };
 
 const closeDialog = () => {
   dialogOpen.value = false;
-  inventoryStore.selectItem(null);
+  itemStore.selectItem(null);
 };
 </script>

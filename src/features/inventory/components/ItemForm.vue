@@ -1,30 +1,20 @@
 <template>
   <q-form @submit="onSubmit" class="q-gutter-md">
     <q-input
-      v-model="form.code"
-      label="Code"
-      outlined
-      required
-      :rules="[(val) => !!val || 'Code is required']"
-    />
-    <q-input
       v-model="form.name"
       label="Name"
       outlined
       required
       :rules="[(val) => !!val || 'Name is required']"
     />
-    <q-input v-model="form.description" label="Description" type="textarea" outlined />
-    <q-input v-model="form.category" label="Category" outlined />
     <q-input
-      v-model.number="form.quantity"
-      label="Quantity"
+      v-model.number="form.stock"
+      label="Stock"
       type="number"
       outlined
       required
-      :rules="[(val) => val >= 0 || 'Quantity must be 0 or more']"
+      :rules="[(val) => val >= 0 || 'Stock must be 0 or more']"
     />
-    <q-input v-model="form.unit" label="Unit" outlined />
     <div class="q-gutter-sm">
       <q-btn
         type="submit"
@@ -67,6 +57,7 @@ watch(
 );
 
 const onSubmit = () => {
+  console.log('Payload to be sent:', form.value); // Debugging
   emit('submit', form.value);
 };
 

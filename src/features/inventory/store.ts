@@ -1,81 +1,44 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { api } from 'src/boot/axios';
 import type { Item, ItemForm } from './types';
 
-export const useInventoryStore = defineStore('inventory', () => {
-  // Mock data
-  const items = ref<Item[]>([
-    {
-      id: 1,
-      code: 'ITM001',
-      name: 'Laptop Dell',
-      description: 'High-performance laptop',
-      category: 'Electronics',
-      quantity: 50,
-      unit: 'pcs',
+export const useItemStore = defineStore('item', {
+  state: () => ({
+    items: [] as Item[],
+    selectedItem: null as Item | null,
+    loading: false,
+  }),
+
+  actions: {
+    async fetchItems() {
+      this.loading = true;
+      try {
+        const res = await api.get('/items');
+        console.log('API response:', res.data); // Debugging
+        this.items = res.data.data;
+      } finally {
+        this.loading = false;
+      }
     },
-    {
-      id: 2,
-      code: 'ITM002',
-      name: 'Mouse Logitech',
-      description: 'Wireless mouse',
-      category: 'Accessories',
-      quantity: 100,
-      unit: 'pcs',
+
+    async createItem(payload: ItemForm) {
+      console.log('Sending payload to API:', payload); // Debugging
+      await api.post('/items', payload);
+      await this.fetchItems();
     },
-    {
-      id: 3,
-      code: 'ITM003',
-      name: 'Keyboard',
-      description: 'Mechanical keyboard',
-      category: 'Accessories',
-      quantity: 30,
-      unit: 'pcs',
+
+    async updateItem(id: number, payload: Partial<Item>) {
+      await api.put(`/items/${id}`, payload);
+      await this.fetchItems();
     },
-  ]);
 
-  const selectedItem = ref<Item | null>(null);
-  const loading = ref(false);
+    async deleteItem(id: number) {
+      await api.delete(`/items/${id}`);
+      await this.fetchItems();
+    },
 
-  // Actions
-  const fetchItems = () => {
-    // Mock fetch - no API
-    loading.value = true;
-    setTimeout(() => {
-      loading.value = false;
-    }, 500);
-  };
-
-  const createItem = (data: ItemForm) => {
-    const newId = Math.max(...items.value.map((item) => item.id), 0) + 1;
-    const newItem: Item = {
-      id: newId,
-      ...data,
-    };
-    items.value.push(newItem);
-  };
-
-  const updateItem = (id: number, data: ItemForm) => {
-    const index = items.value.findIndex((item) => item.id === id);
-    if (index !== -1) {
-      items.value[index] = {
-        id,
-        ...data,
-      };
-    }
-  };
-
-  const selectItem = (item: Item | null) => {
-    selectedItem.value = item;
-  };
-
-  return {
-    items,
-    selectedItem,
-    loading,
-    fetchItems,
-    createItem,
-    updateItem,
-    selectItem,
-  };
+    selectItem(item: Item | null) {
+      this.selectedItem = item;
+    },
+  },
 });
