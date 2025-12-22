@@ -33,7 +33,7 @@ interface Props {
   loading?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   loading: false,
 });
 
@@ -46,7 +46,13 @@ const columns = [
   { name: 'foto', label: 'Foto', field: '', align: 'center' as const },
   { name: 'kodeBarang', label: 'Kode Barang', field: 'kodeBarang', align: 'left' as const },
   { name: 'namaBarang', label: 'Nama Barang', field: 'namaBarang', align: 'left' as const },
-  { name: 'kategori', label: 'Kategori', field: 'kategori.name', align: 'left' as const },
+  {
+    name: 'category',
+    label: 'Kategori',
+    field: 'category',
+    align: 'left' as const,
+    format: (val: { name?: string } | undefined) => val?.name || 'Unknown',
+  },
   { name: 'quantity', label: 'Quantity', field: 'quantity', align: 'right' as const },
   { name: 'unit', label: 'Unit', field: 'unit', align: 'left' as const },
   { name: 'actions', label: 'Actions', field: '', align: 'center' as const },
