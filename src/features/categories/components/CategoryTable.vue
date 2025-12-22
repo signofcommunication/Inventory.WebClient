@@ -1,42 +1,36 @@
 <template>
-  <q-card>
-    <q-card-section>
-      <div class="text-h6">Categories</div>
-    </q-card-section>
-
-    <q-card-section>
-      <q-table
-        :rows="categories"
-        :columns="columns"
-        row-key="id"
-        :loading="loading"
-        :pagination="{ rowsPerPage: 10 }"
-      >
-        <template v-slot:body-cell-actions="props">
-          <q-td :props="props">
-            <q-btn
-              v-if="canEdit"
-              icon="edit"
-              size="sm"
-              color="primary"
-              flat
-              round
-              @click="onEdit(props.row)"
-            />
-            <q-btn
-              v-if="canDelete"
-              icon="delete"
-              size="sm"
-              color="negative"
-              flat
-              round
-              @click="onDelete(props.row)"
-            />
-          </q-td>
-        </template>
-      </q-table>
-    </q-card-section>
-  </q-card>
+  <q-table
+    :rows="categories"
+    :columns="columns"
+    row-key="id"
+    :loading="loading"
+    :pagination="{ rowsPerPage: 10 }"
+  >
+    <template v-slot:body-cell-actions="props">
+      <q-td :props="props">
+        <div class="row q-gutter-xs">
+          <q-btn
+            v-if="canEdit"
+            icon="edit"
+            size="sm"
+            color="primary"
+            flat
+            round
+            @click="onEdit(props.row)"
+          />
+          <q-btn
+            v-if="canDelete"
+            icon="delete"
+            size="sm"
+            color="negative"
+            flat
+            round
+            @click="onDelete(props.row)"
+          />
+        </div>
+      </q-td>
+    </template>
+  </q-table>
 </template>
 
 <script setup lang="ts">
@@ -90,18 +84,16 @@ const onEdit = (category: Category) => {
   emit('edit', category);
 };
 
-const onDelete = async (category: Category) => {
+const onDelete = (category: Category) => {
   Dialog.create({
     title: 'Confirm Delete',
     message: `Are you sure you want to delete category "${category.name}"?`,
     cancel: true,
     persistent: true,
-  }).onOk(async () => {
-    try {
-      await categoriesStore.deleteCategory(category.id);
-    } catch (error) {
+  }).onOk(() => {
+    categoriesStore.deleteCategory(category.id).catch(() => {
       // Error handled in store
-    }
+    });
   });
 };
 </script>

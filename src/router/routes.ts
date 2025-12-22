@@ -15,7 +15,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'items', component: () => import('pages/ItemsPage.vue') },
       {
         path: 'categories',
-        component: () => import('src/features/categories/pages/CategoriesPage.vue'),
+        component: () => import('src/features/categories/CategoriesPage.vue'),
         meta: { requiresAuth: true, roles: ['SUPERADMIN', 'ADMIN'] },
       },
       { path: 'reports', component: () => import('pages/ReportsPage.vue') },
