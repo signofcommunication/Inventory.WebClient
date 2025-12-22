@@ -5,6 +5,11 @@
         <q-btn flat round icon="delete" color="negative" @click="deleteLoan(props.row)" />
       </q-td>
     </template>
+    <template #body-cell-endDate="props">
+      <q-td :props="props">
+        {{ formatDate(props.value) }}
+      </q-td>
+    </template>
   </q-table>
 </template>
 
@@ -25,14 +30,18 @@ const emit = defineEmits<{
 }>();
 
 const columns = [
-  { name: 'itemId', label: 'Item ID', field: 'itemId', align: 'left' as const },
-  { name: 'borrower', label: 'Borrower', field: 'borrower', align: 'left' as const },
+  { name: 'itemName', label: 'Item', field: 'itemName', align: 'left' as const },
+  { name: 'borrowerName', label: 'Borrower', field: 'borrowerName', align: 'left' as const },
   { name: 'quantity', label: 'Quantity', field: 'quantity', align: 'right' as const },
-  { name: 'returnDate', label: 'Return Date', field: 'returnDate', align: 'left' as const },
+  { name: 'endDate', label: 'Return Date', field: 'endDate', align: 'left' as const },
   { name: 'actions', label: 'Actions', field: '', align: 'center' as const },
 ];
 
 const deleteLoan = (loan: Loan) => {
   emit('delete', loan);
+};
+
+const formatDate = (dateStr: string) => {
+  return new Date(dateStr).toLocaleDateString('id-ID');
 };
 </script>

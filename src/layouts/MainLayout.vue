@@ -87,6 +87,12 @@ const linksList: MenuItem[] = [
     roles: ['PEMINJAM'],
   },
   {
+    title: 'Persetujuan Peminjaman',
+    link: '/loan/approval',
+    icon: 'check_circle',
+    roles: ['PIMPINAN'],
+  },
+  {
     title: 'Barang Masuk',
     link: '/transaction/in',
     icon: 'input',

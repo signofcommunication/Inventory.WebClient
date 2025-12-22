@@ -7,7 +7,7 @@ import {
 } from 'vue-router';
 import routes from './routes';
 import { useAuthStore } from 'src/features/auth/store';
-import { hasRole } from 'src/shared/permissions';
+import { hasRole, hasPermission } from 'src/shared/permissions';
 
 /*
  * If not building with SSR mode, you can
@@ -49,14 +49,25 @@ export default defineRouter(function (/* { store, ssrContext } */) {
 
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
     const requiredRoles = to.meta.roles as string[] | undefined;
+    const requiredPermission = to.meta.permission as string | undefined;
 
-    console.log('Requires auth:', requiresAuth, 'Required roles:', requiredRoles);
+    console.log(
+      'Requires auth:',
+      requiresAuth,
+      'Required roles:',
+      requiredRoles,
+      'Required permission:',
+      requiredPermission,
+    );
 
     if (requiresAuth && !authStore.isAuthenticated) {
       console.log('Redirecting to /login');
       next('/login');
     } else if (requiredRoles && !hasRole(requiredRoles)) {
       console.log('Redirecting to /403');
+      next('/403');
+    } else if (requiredPermission && !hasPermission(requiredPermission)) {
+      console.log('Redirecting to /403 due to permission');
       next('/403');
     } else {
       console.log('Allowing navigation');

@@ -35,6 +35,8 @@
               option-label="name"
               outlined
               required
+              :loading="categoriesStore.loading"
+              :disable="categoriesStore.loading"
             />
             <q-input
               v-model.number="form.quantity"
@@ -123,7 +125,7 @@ const columns: QTableProps['columns'] = [
   {
     name: 'category',
     label: 'Category',
-    field: (row: Item) => categoriesStore.getCategoryById(row.categoryId)?.name || '',
+    field: (row: Item) => categories.value.find((cat) => cat.id === row.categoryId)?.name || '',
     align: 'left' as const,
   },
   { name: 'quantity', label: 'Quantity', field: 'quantity', align: 'right' as const },
@@ -172,7 +174,7 @@ const deleteConfirmed = () => {
   }
 };
 
-const onSubmit = async () => {
+const onSubmit = () => {
   submitting.value = true;
   try {
     if (isEdit.value && currentItem.value) {
@@ -196,5 +198,9 @@ watch(showAddDialog, (newVal) => {
     showDialog.value = true;
     showAddDialog.value = false;
   }
+});
+
+onMounted(() => {
+  void categoriesStore.fetchCategories();
 });
 </script>

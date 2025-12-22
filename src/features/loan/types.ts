@@ -1,14 +1,23 @@
+export type LoanStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+
 export interface Loan {
   id: number;
-  itemId: number;
-  borrower: string;
+  itemName: string;
   quantity: number;
-  returnDate: string;
+  borrowerName: string;
+  startDate: string;
+  endDate: string;
+  purpose: string;
+  status: LoanStatus;
+  rejectionReason?: string;
+  approvedBy?: string;
 }
 
 export interface LoanForm {
   itemId: number;
-  borrower: string;
-  quantity: number;
-  returnDate: string;
+  borrowerName: string;
+  qty: number;
+  startDate: string;
+  endDate: string;
+  purpose: string;
 }

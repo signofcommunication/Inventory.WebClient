@@ -40,6 +40,11 @@ const routes: RouteRecordRaw[] = [
         meta: { roles: ['PEMINJAM'] },
       },
       {
+        path: 'loan/approval',
+        component: () => import('src/features/loan/LoanApprovalPage.vue'),
+        meta: { requiresAuth: true, permission: 'loan.approve' },
+      },
+      {
         path: 'transaction/in',
         component: () => import('src/features/transaction/pages/StockInPage.vue'),
         meta: { roles: ['SUPERADMIN', 'ADMIN', 'PETUGAS_GUDANG'] },

@@ -4,21 +4,23 @@
       v-model="form.itemId"
       :options="items"
       option-value="id"
-      option-label="name"
+      :option-label="(item) => item.name"
       label="Item"
       outlined
       required
-      :rules="[(val) => !!val || 'Item is required']"
+      :rules="[(val) => val > 0 || 'Item is required']"
+      :loading="loading"
+      :disable="loading"
     />
     <q-input
-      v-model="form.borrower"
-      label="Borrower"
+      v-model="form.borrowerName"
+      label="Borrower Name"
       outlined
       required
-      :rules="[(val) => !!val || 'Borrower is required']"
+      :rules="[(val) => !!val || 'Borrower Name is required']"
     />
     <q-input
-      v-model.number="form.quantity"
+      v-model.number="form.qty"
       label="Quantity"
       type="number"
       outlined
@@ -26,15 +28,30 @@
       :rules="[(val) => val > 0 || 'Quantity must be greater than 0']"
     />
     <q-input
-      v-model="form.returnDate"
-      label="Return Date"
-      type="date"
+      v-model="form.startDate"
+      label="Start Date"
+      type="datetime-local"
       outlined
       required
-      :rules="[(val) => !!val || 'Return Date is required']"
+      :rules="[(val) => !!val || 'Start Date is required']"
+    />
+    <q-input
+      v-model="form.endDate"
+      label="End Date"
+      type="datetime-local"
+      outlined
+      required
+      :rules="[(val) => !!val || 'End Date is required']"
+    />
+    <q-input
+      v-model="form.purpose"
+      label="Purpose"
+      outlined
+      required
+      :rules="[(val) => !!val || 'Purpose is required']"
     />
     <div class="q-gutter-sm">
-      <q-btn type="submit" label="Create Loan" color="primary" :loading="loading" />
+      <q-btn @click="onSubmit" label="Create Loan" color="primary" :loading="loading" />
       <q-btn flat label="Cancel" @click="onCancel" />
     </div>
   </q-form>
@@ -75,6 +92,7 @@ watch(
 );
 
 const onSubmit = () => {
+  console.log('Form submitted', form.value); // Debug log
   emit('submit', form.value);
 };
 
