@@ -13,6 +13,12 @@ interface Supplier {
   name: string;
 }
 
+interface RawItem {
+  id: number;
+  namaBarang?: string;
+  name?: string;
+}
+
 export const useTransactionStore = defineStore('transaction', () => {
   const stockIns = ref<StockIn[]>([]);
   const stockOuts = ref<StockOut[]>([]);
@@ -75,7 +81,12 @@ export const useTransactionStore = defineStore('transaction', () => {
   const fetchItems = async () => {
     try {
       const response = await api.get('/items');
-      items.value = Array.isArray(response.data.data) ? response.data.data : [];
+      items.value = Array.isArray(response.data.data)
+        ? response.data.data.map((item: RawItem) => ({
+            id: item.id,
+            name: item.namaBarang || item.name || 'Unknown',
+          }))
+        : [];
     } catch (error) {
       console.error('Error fetching items:', error);
       items.value = [];
