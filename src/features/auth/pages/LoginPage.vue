@@ -67,15 +67,15 @@ const onSubmit = async () => {
     console.log('Role:', role);
     if (role === 'PEMINJAM') {
       console.log('Redirecting to /loan');
-      router.replace('/loan');
+      void router.replace('/loan');
     } else if (role === 'PIMPINAN') {
       console.log('Redirecting to /report');
-      router.replace('/report');
+      void router.replace('/report');
     } else {
       console.log('Redirecting to /dashboard');
-      router.replace('/dashboard');
+      void router.replace('/dashboard');
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Login error:', error);
     Notify.create({
       type: 'negative',

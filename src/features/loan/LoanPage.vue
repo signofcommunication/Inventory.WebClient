@@ -5,7 +5,12 @@
 
     <q-btn label="Tambah Peminjaman" color="primary" @click="openAddDialog" class="q-mb-md" />
 
-    <LoanTable :loans="loanStore.loans" :loading="loanStore.loading" @delete="onDelete" />
+    <LoanTable
+      :loans="loanStore.loans"
+      :loading="loanStore.loading"
+      @delete="onDelete"
+      @return="onReturn"
+    />
 
     <q-dialog v-model="dialogOpen">
       <q-card style="min-width: 400px">
@@ -33,8 +38,10 @@ import { useLoanStore } from './store';
 import LoanTable from './components/LoanTable.vue';
 import LoanForm from './components/LoanForm.vue';
 import type { LoanForm as LoanFormData } from './types';
+import { useItemStore } from '../inventory/store';
 
 const loanStore = useLoanStore();
+const itemStore = useItemStore();
 
 const dialogOpen = ref(false);
 const formData = reactive<LoanFormData>({
@@ -95,6 +102,16 @@ const onDelete = async (loan: any) => {
     Notify.create({ type: 'positive', message: 'Loan deleted successfully' });
   } catch (error) {
     Notify.create({ type: 'negative', message: 'Error deleting loan' });
+  }
+};
+
+const onReturn = async (loan: any) => {
+  try {
+    await loanStore.returnLoan(loan.id);
+    await itemStore.fetchItems(); // Refresh item quantities
+    Notify.create({ type: 'positive', message: 'Loan returned successfully' });
+  } catch (error) {
+    Notify.create({ type: 'negative', message: 'Error returning loan' });
   }
 };
 

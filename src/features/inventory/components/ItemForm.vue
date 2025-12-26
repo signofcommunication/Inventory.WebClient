@@ -27,14 +27,6 @@
       emit-value
       map-options
     />
-    <q-input
-      v-model.number="form.quantity"
-      label="Quantity"
-      type="number"
-      outlined
-      required
-      :rules="[(val) => val >= 0 || 'Quantity must be 0 or more']"
-    />
     <q-select
       v-model="form.unit"
       :options="unitOptions"
@@ -82,7 +74,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
 import type { ItemForm } from '../types';
-import { useItemStore } from '../store';
 import { useQuasar } from 'quasar';
 import { useCategoriesStore } from '../../categories/store';
 
@@ -102,7 +93,6 @@ const emit = defineEmits<{
 }>();
 
 const $q = useQuasar();
-const itemStore = useItemStore();
 const categoriesStore = useCategoriesStore();
 
 const form = ref<ItemForm>({ ...props.modelValue });
@@ -135,7 +125,6 @@ const canSubmit = computed(() => {
     form.value.kategoriId !== null &&
     form.value.kategoriId !== undefined &&
     !isNaN(Number(form.value.kategoriId)) &&
-    form.value.quantity >= 0 &&
     !!form.value.unit
   );
 });
@@ -179,10 +168,11 @@ onMounted(async () => {
   // categories.value = itemStore.getCategories();
 });
 
-const onRejected = (rejectedEntries: any) => {
+const onRejected = (rejectedEntries: unknown) => {
+  const entries = rejectedEntries as { failedPropValidation: string }[];
   $q.notify({
     type: 'negative',
-    message: 'File rejected: ' + rejectedEntries[0].failedPropValidation,
+    message: 'File rejected: ' + (entries[0]?.failedPropValidation || 'Unknown error'),
   });
 };
 
@@ -195,7 +185,6 @@ const onSubmit = () => {
   formData.append('kodeBarang', form.value.kodeBarang);
   formData.append('namaBarang', form.value.namaBarang);
   formData.append('kategoriId', Number(form.value.kategoriId).toString());
-  formData.append('quantity', form.value.quantity.toString());
   formData.append('unit', form.value.unit);
   if (form.value.fotoBarang) {
     formData.append('fotoBarang', form.value.fotoBarang);

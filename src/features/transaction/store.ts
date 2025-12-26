@@ -17,6 +17,7 @@ interface RawItem {
   id: number;
   namaBarang?: string;
   name?: string;
+  quantity?: number;
 }
 
 export const useTransactionStore = defineStore('transaction', () => {
@@ -85,6 +86,7 @@ export const useTransactionStore = defineStore('transaction', () => {
         ? response.data.data.map((item: RawItem) => ({
             id: item.id,
             name: item.namaBarang || item.name || 'Unknown',
+            quantity: item.quantity || 0,
           }))
         : [];
     } catch (error) {

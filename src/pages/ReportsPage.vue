@@ -21,7 +21,7 @@
         <q-card-section>
           <div class="text-h6">Low Stock Items</div>
           <div class="text-h4 text-negative">{{ lowStockItems }}</div>
-          <div class="text-caption">Items with quantity < 5</div>
+          <div class="text-caption">Items with quantity &lt; 5</div>
         </q-card-section>
       </q-card>
     </div>

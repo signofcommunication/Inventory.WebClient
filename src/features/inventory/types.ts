@@ -13,7 +13,6 @@ export interface ItemForm {
   kodeBarang: string;
   namaBarang: string;
   kategoriId: number | null;
-  quantity: number;
   unit: string;
   fotoBarang?: File | null;
 }

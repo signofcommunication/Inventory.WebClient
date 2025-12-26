@@ -55,7 +55,7 @@ import { ref, reactive, onMounted } from 'vue';
 import { useItemStore } from '../store';
 import ItemTable from '../components/ItemTable.vue';
 import ItemForm from '../components/ItemForm.vue';
-import type { ItemForm as ItemFormData } from '../types';
+import type { ItemForm as ItemFormData, Item } from '../types';
 import { Notify } from 'quasar';
 import { hasRole } from '../../../shared/permissions';
 import { useCategoriesStore } from '../../categories/store';
@@ -64,19 +64,18 @@ const itemStore = useItemStore();
 const categoriesStore = useCategoriesStore();
 
 onMounted(() => {
-  itemStore.fetchItems();
-  categoriesStore.fetchCategories();
+  void itemStore.fetchItems();
+  void categoriesStore.fetchCategories();
 });
 
 const dialogOpen = ref(false);
 const isEdit = ref(false);
 const showDeleteDialog = ref(false);
-const selectedItemToDelete = ref<any>(null);
+const selectedItemToDelete = ref<Item | null>(null);
 const formData = reactive<ItemFormData>({
   kodeBarang: '',
   namaBarang: '',
   kategoriId: null,
-  quantity: 0,
   unit: '',
   fotoBarang: null,
 });
@@ -90,14 +89,12 @@ const openAddDialog = () => {
   formData.kodeBarang = '';
   formData.namaBarang = '';
   formData.kategoriId = null;
-  formData.quantity = 0;
   formData.unit = '';
   formData.fotoBarang = null;
-  formData.kategoriId = null;
   dialogOpen.value = true;
 };
 
-const openEditDialog = (item: any) => {
+const openEditDialog = (item: Item) => {
   if (!hasRole(['SUPERADMIN', 'ADMIN'])) {
     Notify.create({ type: 'negative', message: 'Unauthorized' });
     return;
@@ -106,7 +103,6 @@ const openEditDialog = (item: any) => {
   formData.kodeBarang = item.kodeBarang;
   formData.namaBarang = item.namaBarang;
   formData.kategoriId = item.kategoriId;
-  formData.quantity = item.quantity;
   formData.unit = item.unit;
   formData.fotoBarang = null; // For edit, don't set file, but preview will show existing
   itemStore.selectItem(item);
@@ -123,12 +119,13 @@ const onSubmit = async (data: FormData) => {
       Notify.create({ type: 'positive', message: 'Item created successfully' });
     }
     closeDialog();
-  } catch (error: any) {
-    Notify.create({ type: 'negative', message: error.response?.data?.message || 'Error occurred' });
+  } catch (error: unknown) {
+    const err = error as { response?: { data?: { message?: string } } };
+    Notify.create({ type: 'negative', message: err.response?.data?.message || 'Error occurred' });
   }
 };
 
-const onDelete = async (item: any) => {
+const onDelete = (item: Item) => {
   if (!hasRole(['SUPERADMIN', 'ADMIN'])) {
     Notify.create({ type: 'negative', message: 'Unauthorized' });
     return;
@@ -144,10 +141,11 @@ const confirmDelete = async () => {
     Notify.create({ type: 'positive', message: 'Item deleted successfully' });
     showDeleteDialog.value = false;
     selectedItemToDelete.value = null;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { response?: { data?: { message?: string } } };
     Notify.create({
       type: 'negative',
-      message: error.response?.data?.message || 'Error occurred',
+      message: err.response?.data?.message || 'Error occurred',
     });
   }
 };

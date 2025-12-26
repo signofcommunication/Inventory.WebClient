@@ -42,7 +42,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'loan/approval',
         component: () => import('src/features/loan/LoanApprovalPage.vue'),
-        meta: { requiresAuth: true, permission: 'loan.approve' },
+        meta: { requiresAuth: true, permission: 'loans.approve' },
       },
       {
         path: 'transaction/in',
@@ -63,15 +63,9 @@ const routes: RouteRecordRaw[] = [
         path: 'change-password',
         component: () => import('src/features/auth/ChangePasswordPage.vue'),
       },
+      { path: '403', component: () => import('pages/Error403.vue') },
+      { path: '401', component: () => import('pages/Error401.vue') },
     ],
-  },
-  {
-    path: '/403',
-    component: () => import('pages/Error403.vue'),
-  },
-  {
-    path: '/401',
-    component: () => import('pages/Error401.vue'),
   },
 
   // Always leave this as last one,

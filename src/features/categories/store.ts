@@ -110,5 +110,6 @@ export const useCategoriesStore = defineStore('categories', () => {
     updateCategory,
     deleteCategory,
     getCategories: computed(() => categories.value),
+    getCategoryById: (id: number) => categories.value.find((cat) => cat.id === id),
   };
 });

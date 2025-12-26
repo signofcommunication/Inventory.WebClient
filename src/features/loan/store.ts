@@ -66,29 +66,31 @@ export const useLoanStore = defineStore('loan', () => {
   };
 
   const fetchPendingLoans = async () => {
-    if (!hasPermission('loans.view')) {
+    if (!hasPermission('loans.approve')) {
       pendingLoans.value = [];
       return;
     }
     loading.value = true;
     try {
       console.log('Fetching pending loans...');
-      const response = await api.get('/loans?status=PENDING');
+      const response = await api.get('/loans');
       console.log('Pending loans response:', response.data);
-      pendingLoans.value = (
-        Array.isArray(response.data) ? response.data : response.data.data || []
-      ).map((loan: RawLoan) => ({
-        id: loan.id,
-        itemName: loan.item?.namaBarang || 'Unknown',
-        quantity: loan.qty,
-        borrowerName: loan.borrowerName,
-        startDate: loan.startDate,
-        endDate: loan.endDate,
-        purpose: loan.purpose,
-        status: loan.status,
-        rejectionReason: loan.rejectionReason,
-        approvedBy: loan.approvedBy?.name || null,
-      }));
+      const allLoans = Array.isArray(response.data) ? response.data : response.data.data || [];
+      pendingLoans.value = allLoans
+        .filter((loan: RawLoan) => loan.status === 'PENDING')
+        .map((loan: RawLoan) => ({
+          id: loan.id,
+          itemName: loan.item?.namaBarang || 'Unknown',
+          quantity: loan.qty,
+          borrowerName: loan.borrowerName,
+          startDate: loan.startDate,
+          endDate: loan.endDate,
+          purpose: loan.purpose,
+          status: loan.status,
+          rejectionReason: loan.rejectionReason,
+          approvedBy: loan.approvedBy?.name || null,
+        }));
+      console.log('Filtered pending loans:', pendingLoans.value);
     } catch (error) {
       console.error('Error fetching pending loans:', error);
       console.log('Error details:', (error as { response?: { data: unknown } }).response?.data);
@@ -141,6 +143,7 @@ export const useLoanStore = defineStore('loan', () => {
     try {
       await api.put(`/loans/${loanId}/approve`);
       await fetchPendingLoans(); // Refresh pending loans
+      // Note: Item quantities will be refreshed by the component
     } catch (error) {
       console.error('Error approving loan:', error);
       throw error;
@@ -175,6 +178,20 @@ export const useLoanStore = defineStore('loan', () => {
     }
   };
 
+  const returnLoan = async (loanId: number) => {
+    loading.value = true;
+    try {
+      await api.put(`/loans/${loanId}/return`);
+      await fetchLoans(); // Refresh loans
+      // Note: Item quantities will be refreshed by the component
+    } catch (error) {
+      console.error('Error returning loan:', error);
+      throw error;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     loans,
     pendingLoans,
@@ -186,6 +203,7 @@ export const useLoanStore = defineStore('loan', () => {
     createLoan,
     approveLoan,
     rejectLoan,
+    returnLoan,
     deleteLoan,
   };
 });

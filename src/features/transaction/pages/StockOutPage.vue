@@ -33,8 +33,10 @@ import { useTransactionStore } from '../store';
 import StockOutTable from '../components/StockOutTable.vue';
 import StockOutForm from '../components/StockOutForm.vue';
 import type { StockOutFormData } from '../types';
+import { useItemStore } from '../../inventory/store';
 
 const transactionStore = useTransactionStore();
+const itemStore = useItemStore();
 
 const dialogOpen = ref(false);
 const formData = reactive<StockOutFormData>({
@@ -63,6 +65,7 @@ const onSubmit = async (data: StockOutFormData) => {
       borrower: data.borrower,
     };
     await transactionStore.createStockOut(payload);
+    await itemStore.fetchItems(); // Refresh item quantities
     Notify.create({ type: 'positive', message: 'Stock Out created successfully' });
     closeDialog();
   } catch (error) {

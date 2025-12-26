@@ -15,7 +15,11 @@
       type="number"
       outlined
       required
-      :rules="[(val) => val > 0 || 'Quantity must be greater than 0']"
+      :rules="[
+        (val) => val > 0 || 'Quantity must be greater than 0',
+        (val) =>
+          !form.item || val <= form.item.quantity || 'Quantity cannot exceed available stock',
+      ]"
     />
     <q-input
       v-model="form.borrower"

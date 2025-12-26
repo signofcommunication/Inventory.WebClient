@@ -29,6 +29,7 @@ export interface StockInForm {
 interface Item {
   id: number;
   name: string;
+  quantity: number;
 }
 
 interface Supplier {

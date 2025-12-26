@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'src/boot/axios';
-import type { Item, ItemForm } from './types';
+import type { Item } from './types';
 import { useCategoriesStore } from '../categories/store';
 
 export const useItemStore = defineStore('item', {

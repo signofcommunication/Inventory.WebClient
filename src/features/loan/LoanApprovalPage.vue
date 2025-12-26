@@ -3,7 +3,7 @@
     <div class="q-pa-md">
       <h5>Persetujuan Peminjaman Barang</h5>
       <q-table
-        :rows="pendingLoans"
+        :rows="loanStore.pendingLoans"
         :columns="columns"
         row-key="id"
         :loading="loading"
@@ -81,19 +81,22 @@ import { ref, onMounted } from 'vue';
 import { useLoanStore } from './store';
 import { Notify } from 'quasar';
 import type { Loan } from './types';
+import { useItemStore } from '../inventory/store';
 
 const loanStore = useLoanStore();
-const { pendingLoans, loading, fetchPendingLoans, approveLoan, rejectLoan } = loanStore;
+const { loading, fetchPendingLoans, approveLoan, rejectLoan } = loanStore;
+
+const itemStore = useItemStore();
 
 const columns = [
-  { name: 'borrowerName', label: 'Peminjam', field: 'borrowerName', align: 'left' as 'left' },
-  { name: 'itemName', label: 'Barang', field: 'itemName', align: 'left' as 'left' },
-  { name: 'quantity', label: 'Quantity', field: 'quantity', align: 'left' as 'left' },
-  { name: 'startDate', label: 'Tanggal Mulai', field: 'startDate', align: 'left' as 'left' },
-  { name: 'endDate', label: 'Tanggal Selesai', field: 'endDate', align: 'left' as 'left' },
-  { name: 'purpose', label: 'Keperluan', field: 'purpose', align: 'left' as 'left' },
-  { name: 'status', label: 'Status', field: 'status', align: 'left' as 'left' },
-  { name: 'actions', label: 'Aksi', field: '', align: 'left' as 'left' },
+  { name: 'borrowerName', label: 'Peminjam', field: 'borrowerName', align: 'left' as const },
+  { name: 'itemName', label: 'Barang', field: 'itemName', align: 'left' as const },
+  { name: 'quantity', label: 'Quantity', field: 'quantity', align: 'left' as const },
+  { name: 'startDate', label: 'Tanggal Mulai', field: 'startDate', align: 'left' as const },
+  { name: 'endDate', label: 'Tanggal Selesai', field: 'endDate', align: 'left' as const },
+  { name: 'purpose', label: 'Keperluan', field: 'purpose', align: 'left' as const },
+  { name: 'status', label: 'Status', field: 'status', align: 'left' as const },
+  { name: 'actions', label: 'Aksi', field: '', align: 'left' as const },
 ];
 
 const getStatusColor = (status: string) => {
@@ -127,9 +130,11 @@ const doApprove = async () => {
   if (!selectedLoan.value) return;
   try {
     await approveLoan(selectedLoan.value.id);
+    await itemStore.fetchItems(); // Refresh item quantities
+    await fetchPendingLoans(); // Refresh pending loans list
     Notify.create({ type: 'positive', message: 'Peminjaman berhasil disetujui' });
     approveDialog.value = false;
-  } catch (error) {
+  } catch {
     Notify.create({ type: 'negative', message: 'Gagal menyetujui peminjaman' });
   }
 };
@@ -143,15 +148,17 @@ const doReject = async () => {
   if (!selectedLoan.value) return;
   try {
     await rejectLoan(selectedLoan.value.id, rejectionReason.value);
+    await fetchPendingLoans(); // Refresh pending loans list
     Notify.create({ type: 'positive', message: 'Peminjaman berhasil ditolak' });
     rejectDialog.value = false;
     rejectionReason.value = '';
-  } catch (error) {
+  } catch {
     Notify.create({ type: 'negative', message: 'Gagal menolak peminjaman' });
   }
 };
 
 onMounted(() => {
-  fetchPendingLoans();
+  console.log('LoanApprovalPage onMounted, calling fetchPendingLoans');
+  void fetchPendingLoans();
 });
 </script>
