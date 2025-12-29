@@ -63,6 +63,11 @@ const routes: RouteRecordRaw[] = [
         path: 'change-password',
         component: () => import('src/features/auth/ChangePasswordPage.vue'),
       },
+      {
+        path: 'admin/users',
+        component: () => import('src/features/users/pages/UserManagementPage.vue'),
+        meta: { requiresAuth: true, roles: ['SUPERADMIN'] },
+      },
       { path: '403', component: () => import('pages/Error403.vue') },
       { path: '401', component: () => import('pages/Error401.vue') },
     ],

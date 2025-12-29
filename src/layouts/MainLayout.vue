@@ -111,6 +111,12 @@ const linksList: MenuItem[] = [
     roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'],
   },
   {
+    title: 'Manajemen User',
+    link: '/admin/users',
+    icon: 'people',
+    roles: ['SUPERADMIN'],
+  },
+  {
     title: 'Ganti Password',
     link: '/change-password',
     icon: 'lock',
