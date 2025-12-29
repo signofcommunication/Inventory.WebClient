@@ -16,20 +16,23 @@
       <q-list>
         <q-item-label header> Menu Navigasi </q-item-label>
 
-        <q-item
-          v-for="link in visibleLinks"
-          :key="link.title"
-          clickable
-          tag="router-link"
-          :to="link.link"
-        >
-          <q-item-section avatar>
-            <q-icon :name="link.icon" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>{{ link.title }}</q-item-label>
-          </q-item-section>
-        </q-item>
+        <template v-for="group in visibleGroups" :key="group.title">
+          <q-item-label header>{{ group.title }}</q-item-label>
+          <q-item
+            v-for="link in group.items"
+            :key="link.title"
+            clickable
+            tag="router-link"
+            :to="link.link"
+          >
+            <q-item-section avatar>
+              <q-icon :name="link.icon" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ link.title }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </template>
       </q-list>
     </q-drawer>
 
@@ -52,78 +55,110 @@ interface MenuItem {
   roles?: string[];
 }
 
+interface MenuGroup {
+  title: string;
+  items: MenuItem[];
+}
+
 const authStore = useAuthStore();
 const router = useRouter();
 
-const linksList: MenuItem[] = [
+const menuGroups: MenuGroup[] = [
   {
-    title: 'Dashboard',
-    link: '/dashboard',
-    icon: 'dashboard',
-    roles: [], // all
+    title: 'Manajemen',
+    items: [
+      {
+        title: 'Dashboard',
+        link: '/dashboard',
+        icon: 'dashboard',
+        roles: [], // all
+      },
+      {
+        title: 'Kategori Barang',
+        link: '/categories',
+        icon: 'category',
+        roles: ['SUPERADMIN', 'ADMIN'],
+      },
+      {
+        title: 'Data Barang',
+        link: '/inventory',
+        icon: 'inventory',
+        roles: ['SUPERADMIN', 'ADMIN'],
+      },
+      {
+        title: 'Data Supplier',
+        link: '/supplier',
+        icon: 'business',
+        roles: ['SUPERADMIN', 'ADMIN'],
+      },
+    ],
   },
   {
-    title: 'Kategori Barang',
-    link: '/categories',
-    icon: 'category',
-    roles: ['SUPERADMIN', 'ADMIN'],
-  },
-  {
-    title: 'Data Barang',
-    link: '/inventory',
-    icon: 'inventory',
-    roles: ['SUPERADMIN', 'ADMIN'],
-  },
-  {
-    title: 'Data Supplier',
-    link: '/supplier',
-    icon: 'business',
-    roles: ['SUPERADMIN', 'ADMIN'],
-  },
-  {
-    title: 'Peminjaman',
-    link: '/loan',
-    icon: 'assignment',
-    roles: ['PEMINJAM'],
-  },
-  {
-    title: 'Persetujuan Peminjaman',
-    link: '/loan/approval',
-    icon: 'check_circle',
-    roles: ['PIMPINAN'],
-  },
-  {
-    title: 'Barang Masuk',
-    link: '/transaction/in',
-    icon: 'input',
-    roles: ['SUPERADMIN', 'ADMIN', 'PETUGAS_GUDANG'],
-  },
-  {
-    title: 'Barang Keluar',
-    link: '/transaction/out',
-    icon: 'output',
-    roles: ['SUPERADMIN', 'ADMIN', 'PETUGAS_GUDANG'],
+    title: 'Transaksi',
+    items: [
+      {
+        title: 'Peminjaman',
+        link: '/loan',
+        icon: 'assignment',
+        roles: ['PEMINJAM'],
+      },
+      {
+        title: 'Persetujuan Peminjaman',
+        link: '/loan/approval',
+        icon: 'check_circle',
+        roles: ['PIMPINAN'],
+      },
+      {
+        title: 'Barang Masuk',
+        link: '/transaction/in',
+        icon: 'input',
+        roles: ['SUPERADMIN', 'ADMIN', 'PETUGAS_GUDANG'],
+      },
+      {
+        title: 'Barang Keluar',
+        link: '/transaction/out',
+        icon: 'output',
+        roles: ['SUPERADMIN', 'ADMIN', 'PETUGAS_GUDANG'],
+      },
+    ],
   },
   {
     title: 'Laporan',
-    link: '/report',
-    icon: 'bar_chart',
-    roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'],
+    items: [
+      {
+        title: 'Laporan',
+        link: '/report',
+        icon: 'bar_chart',
+        roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'],
+      },
+    ],
   },
   {
-    title: 'Manajemen User',
-    link: '/admin/users',
-    icon: 'people',
-    roles: ['SUPERADMIN'],
-  },
-  {
-    title: 'Ganti Password',
-    link: '/change-password',
-    icon: 'lock',
+    title: 'Admin',
+    items: [
+      {
+        title: 'Manajemen User',
+        link: '/admin/users',
+        icon: 'people',
+        roles: ['SUPERADMIN'],
+      },
+      {
+        title: 'Ganti Password',
+        link: '/change-password',
+        icon: 'lock',
+      },
+    ],
   },
 ];
 
-const visibleLinks = computed(() => linksList.filter((link) => !link.roles || hasRole(link.roles)));
+const visibleGroups = computed(() =>
+  menuGroups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => !item.roles || hasRole(item.roles)),
+    }))
+    .filter((group) => group.items.length > 0),
+);
 
 const leftDrawerOpen = ref(false);
 
