@@ -1,6 +1,6 @@
 <template>
   <q-table
-    :rows="items"
+    :rows="brands"
     :columns="columns"
     row-key="id"
     :loading="loading"
@@ -18,6 +18,15 @@
             round
             @click="onEdit(props.row)"
           />
+          <q-btn
+            v-if="canDelete"
+            icon="delete"
+            size="sm"
+            color="negative"
+            flat
+            round
+            @click="onDelete(props.row)"
+          />
         </div>
       </q-td>
     </template>
@@ -26,42 +35,24 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useItemsStore } from '../store';
-import { useBrandsStore } from '../../brands/store';
-import { useCategoriesStore } from '../../categories/store';
+import { useBrandsStore } from '../store';
 import { hasRole } from '../../../shared/permissions';
-import type { Item } from '../types';
+import type { Brand } from '../types';
 
 const emit = defineEmits<{
-  edit: [item: Item];
+  edit: [brand: Brand];
+  delete: [brand: Brand];
 }>();
 
-const itemsStore = useItemsStore();
 const brandsStore = useBrandsStore();
-const categoriesStore = useCategoriesStore();
 
-const items = computed(() => itemsStore.items);
-const loading = computed(() => itemsStore.loading);
+const brands = computed(() => brandsStore.brands);
+const loading = computed(() => brandsStore.loading);
 
 const canEdit = computed(() => hasRole(['SUPERADMIN', 'ADMIN']));
-
-const getBrandName = (brandId: string) => {
-  const brand = brandsStore.getBrandById(brandId);
-  return brand ? brand.name : 'Unknown';
-};
-
-const getCategoryName = (categoryId: string) => {
-  const category = categoriesStore.getCategoryById(Number(categoryId));
-  return category ? category.name : 'Unknown';
-};
+const canDelete = computed(() => hasRole(['SUPERADMIN']));
 
 const columns = [
-  {
-    name: 'itemCode',
-    label: 'Item Code',
-    align: 'left' as const,
-    field: 'itemCode',
-  },
   {
     name: 'name',
     label: 'Name',
@@ -69,18 +60,10 @@ const columns = [
     field: 'name',
   },
   {
-    name: 'brand',
-    label: 'Brand',
+    name: 'code',
+    label: 'Code',
     align: 'left' as const,
-    field: 'brandId',
-    format: (val: string) => getBrandName(val),
-  },
-  {
-    name: 'category',
-    label: 'Category',
-    align: 'left' as const,
-    field: 'categoryId',
-    format: (val: string) => getCategoryName(val),
+    field: 'code',
   },
   {
     name: 'createdAt',
@@ -97,7 +80,11 @@ const columns = [
   },
 ];
 
-const onEdit = (item: Item) => {
-  emit('edit', item);
+const onEdit = (brand: Brand) => {
+  emit('edit', brand);
+};
+
+const onDelete = (brand: Brand) => {
+  emit('delete', brand);
 };
 </script>

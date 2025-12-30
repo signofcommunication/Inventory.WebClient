@@ -12,10 +12,19 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
-      { path: 'items', component: () => import('pages/ItemsPage.vue') },
+      {
+        path: 'items',
+        component: () => import('src/features/inventory/pages/ItemPage.vue'),
+        meta: { requiresAuth: true, roles: ['SUPERADMIN', 'ADMIN'] },
+      },
       {
         path: 'categories',
         component: () => import('src/features/categories/CategoriesPage.vue'),
+        meta: { requiresAuth: true, roles: ['SUPERADMIN', 'ADMIN'] },
+      },
+      {
+        path: 'brands',
+        component: () => import('src/features/brands/pages/BrandPage.vue'),
         meta: { requiresAuth: true, roles: ['SUPERADMIN', 'ADMIN'] },
       },
       { path: 'reports', component: () => import('pages/ReportsPage.vue') },

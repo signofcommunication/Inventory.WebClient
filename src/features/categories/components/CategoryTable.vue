@@ -37,11 +37,11 @@
 import { computed } from 'vue';
 import { useCategoriesStore } from '../store';
 import { hasRole } from '../../../shared/permissions';
-import { Dialog } from 'quasar';
 import type { Category } from '../types';
 
 const emit = defineEmits<{
   edit: [category: Category];
+  delete: [category: Category];
 }>();
 
 const categoriesStore = useCategoriesStore();
@@ -85,15 +85,6 @@ const onEdit = (category: Category) => {
 };
 
 const onDelete = (category: Category) => {
-  Dialog.create({
-    title: 'Confirm Delete',
-    message: `Are you sure you want to delete category "${category.name}"?`,
-    cancel: true,
-    persistent: true,
-  }).onOk(() => {
-    categoriesStore.deleteCategory(category.id).catch(() => {
-      // Error handled in store
-    });
-  });
+  emit('delete', category);
 };
 </script>

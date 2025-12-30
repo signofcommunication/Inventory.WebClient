@@ -1,18 +1,14 @@
 export interface Item {
-  id: number;
-  kodeBarang: string;
-  namaBarang: string;
-  kategoriId: number;
-  kategori?: { id: number; name: string };
-  quantity: number;
-  unit: string;
-  fotoBarang?: string;
+  id: string;
+  name: string;
+  brandId: string;
+  categoryId: number;
+  itemCode: string;
+  createdAt: string;
 }
 
 export interface ItemForm {
-  kodeBarang: string;
-  namaBarang: string;
-  kategoriId: number | null;
-  unit: string;
-  fotoBarang?: File | null;
+  name: string;
+  brandId: string;
+  categoryId: number;
 }

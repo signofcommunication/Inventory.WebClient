@@ -91,6 +91,12 @@ const menuGroups: MenuGroup[] = [
         icon: 'business',
         roles: ['SUPERADMIN', 'ADMIN'],
       },
+      {
+        title: 'Data Merek',
+        link: '/brands',
+        icon: 'branding_watermark',
+        roles: ['SUPERADMIN', 'ADMIN'],
+      },
     ],
   },
   {

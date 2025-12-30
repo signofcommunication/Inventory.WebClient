@@ -21,7 +21,7 @@ api.interceptors.request.use(
   (error) => Promise.reject(error as Error),
 );
 
-// Response interceptor to handle 401
+// Response interceptor to handle 401 and 403
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -31,6 +31,11 @@ api.interceptors.response.use(
       // Redirect to login
       if (typeof window !== 'undefined') {
         window.location.href = '/login';
+      }
+    } else if (error.response?.status === 403) {
+      // Redirect to 403
+      if (typeof window !== 'undefined') {
+        window.location.href = '/403';
       }
     }
     return Promise.reject(error as Error);
