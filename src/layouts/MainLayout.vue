@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title>Sistem Informasi Inventaris</q-toolbar-title>
+        <q-toolbar-title>RAYA IMS (Inventory Management System)</q-toolbar-title>
 
         <q-space />
 
