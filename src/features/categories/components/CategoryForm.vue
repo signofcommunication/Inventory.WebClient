@@ -95,7 +95,7 @@ const onSubmit = async () => {
       await categoriesStore.createCategory(form.value);
     }
     emit('saved');
-  } catch (error) {
+  } catch {
     // Error handled in store
   }
 };

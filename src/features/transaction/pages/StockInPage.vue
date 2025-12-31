@@ -31,13 +31,13 @@
 import { ref, reactive, onMounted } from 'vue';
 import { Notify } from 'quasar';
 import { useTransactionStore } from '../store';
-import { useItemStore } from '../../inventory/store';
+import { useItemsStore } from '../../inventory/store';
 import StockInTable from '../components/StockInTable.vue';
 import StockInForm from '../components/StockInForm.vue';
 import type { StockInFormData } from '../types';
 
 const transactionStore = useTransactionStore();
-const itemStore = useItemStore();
+const itemStore = useItemsStore();
 
 const dialogOpen = ref(false);
 const formData = reactive<StockInFormData>({
@@ -47,9 +47,9 @@ const formData = reactive<StockInFormData>({
 });
 
 onMounted(() => {
-  transactionStore.fetchStockIn();
-  transactionStore.fetchItems();
-  transactionStore.fetchSuppliers();
+  void transactionStore.fetchStockIn();
+  void transactionStore.fetchItems();
+  void transactionStore.fetchSuppliers();
 });
 
 const openAddDialog = () => {
@@ -70,7 +70,7 @@ const onSubmit = async (data: StockInFormData) => {
     await itemStore.fetchItems(); // Refresh item quantities
     Notify.create({ type: 'positive', message: 'Stock In created successfully' });
     closeDialog();
-  } catch (error) {
+  } catch {
     Notify.create({ type: 'negative', message: 'Error creating stock in' });
   }
 };

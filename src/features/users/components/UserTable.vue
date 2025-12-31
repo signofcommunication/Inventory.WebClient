@@ -47,11 +47,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useQuasar } from 'quasar';
 import { useUsersStore } from 'src/features/users/store';
 import { useAuthStore } from 'src/features/auth/store';
-import { User } from 'src/features/users/types';
+import type { User } from 'src/features/users/types';
 
 const $q = useQuasar();
 const usersStore = useUsersStore();
@@ -96,10 +95,10 @@ const toggleStatus = async (user: User) => {
       type: 'positive',
       message: `User ${user.isActive ? 'dinonaktifkan' : 'diaktifkan'}`,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     $q.notify({
       type: 'negative',
-      message: error.message || 'Gagal mengubah status user',
+      message: (error as Error).message || 'Gagal mengubah status user',
     });
   }
 };

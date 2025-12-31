@@ -37,11 +37,11 @@ import { Notify } from 'quasar';
 import { useLoanStore } from './store';
 import LoanTable from './components/LoanTable.vue';
 import LoanForm from './components/LoanForm.vue';
-import type { LoanForm as LoanFormData } from './types';
-import { useItemStore } from '../inventory/store';
+import type { LoanForm as LoanFormData, Loan } from './types';
+import { useItemsStore } from '../inventory/store';
 
 const loanStore = useLoanStore();
-const itemStore = useItemStore();
+const itemStore = useItemsStore();
 
 const dialogOpen = ref(false);
 const formData = reactive<LoanFormData>({
@@ -54,8 +54,8 @@ const formData = reactive<LoanFormData>({
 });
 
 onMounted(() => {
-  loanStore.fetchLoans();
-  loanStore.fetchItems();
+  void loanStore.fetchLoans();
+  void loanStore.fetchItems();
 });
 
 const openAddDialog = () => {
@@ -76,7 +76,7 @@ const onSubmit = async (data: LoanFormData) => {
     Notify.create({ type: 'negative', message: 'Please select an item' });
     return;
   }
-  const itemId = typeof data.itemId === 'object' ? (data.itemId as any).id : data.itemId;
+  const itemId = typeof data.itemId === 'object' ? (data.itemId as { id: number }).id : data.itemId;
   const payload = {
     itemId: itemId,
     qty: data.qty,
@@ -96,21 +96,21 @@ const onSubmit = async (data: LoanFormData) => {
   }
 };
 
-const onDelete = async (loan: any) => {
+const onDelete = async (loan: Loan) => {
   try {
     await loanStore.deleteLoan(loan.id);
     Notify.create({ type: 'positive', message: 'Loan deleted successfully' });
-  } catch (error) {
+  } catch {
     Notify.create({ type: 'negative', message: 'Error deleting loan' });
   }
 };
 
-const onReturn = async (loan: any) => {
+const onReturn = async (loan: Loan) => {
   try {
     await loanStore.returnLoan(loan.id);
-    await itemStore.fetchItems(); // Refresh item quantities
+    void itemStore.fetchItems(); // Refresh item quantities
     Notify.create({ type: 'positive', message: 'Loan returned successfully' });
-  } catch (error) {
+  } catch {
     Notify.create({ type: 'negative', message: 'Error returning loan' });
   }
 };

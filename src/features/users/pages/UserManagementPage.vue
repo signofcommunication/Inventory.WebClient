@@ -17,7 +17,7 @@ import { useQuasar } from 'quasar';
 import UserTable from 'src/features/users/components/UserTable.vue';
 import UserForm from 'src/features/users/components/UserForm.vue';
 import { useUsersStore } from 'src/features/users/store';
-import { User } from 'src/features/users/types';
+import type { User } from 'src/features/users/types';
 
 const $q = useQuasar();
 const usersStore = useUsersStore();
@@ -26,7 +26,7 @@ const showUserForm = ref(false);
 const selectedUser = ref<User | null>(null);
 
 onMounted(() => {
-  usersStore.fetchUsers();
+  void usersStore.fetchUsers();
 });
 
 const editUser = (user: User) => {
@@ -35,12 +35,12 @@ const editUser = (user: User) => {
 };
 
 const confirmDeleteUser = async (user: User) => {
-  const confirm = await $q.dialog({
+  const confirm = await ($q.dialog({
     title: 'Konfirmasi Hapus',
     message: `Apakah Anda yakin ingin menghapus user "${user.name}"?`,
     cancel: true,
     persistent: true,
-  });
+  }) as Promise<boolean>);
 
   if (confirm) {
     try {
@@ -49,10 +49,10 @@ const confirmDeleteUser = async (user: User) => {
         type: 'positive',
         message: 'User berhasil dihapus',
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       $q.notify({
         type: 'negative',
-        message: error.message || 'Gagal menghapus user',
+        message: (error as Error).message || 'Gagal menghapus user',
       });
     }
   }
@@ -60,6 +60,6 @@ const confirmDeleteUser = async (user: User) => {
 
 const onUserSaved = () => {
   selectedUser.value = null;
-  usersStore.fetchUsers();
+  void usersStore.fetchUsers();
 };
 </script>

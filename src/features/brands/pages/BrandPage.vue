@@ -59,7 +59,7 @@ const brandToDelete = ref<Brand | null>(null);
 const canCreate = hasRole(['SUPERADMIN', 'ADMIN']);
 
 onMounted(() => {
-  brandsStore.fetchBrands();
+  void brandsStore.fetchBrands();
 });
 
 const editBrand = (brand: Brand) => {
@@ -75,7 +75,7 @@ const confirmDelete = (brand: Brand) => {
 
 const deleteConfirmed = () => {
   if (brandToDelete.value) {
-    brandsStore.deleteBrand(brandToDelete.value.id);
+    void brandsStore.deleteBrand(brandToDelete.value.id);
     showDeleteDialog.value = false;
     brandToDelete.value = null;
   }

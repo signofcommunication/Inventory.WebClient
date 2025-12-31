@@ -10,7 +10,7 @@
 import { computed } from 'vue';
 
 interface Props {
-  data: any[];
+  data: unknown[];
 }
 
 const props = defineProps<Props>();
@@ -37,7 +37,7 @@ const formatHeader = (key: string): string => {
 
 const columns = computed(() => {
   if (!props.data || props.data.length === 0) return [];
-  const keys = Object.keys(props.data[0]);
+  const keys = Object.keys(props.data[0] as Record<string, unknown>);
   return keys.map((key) => ({
     name: key,
     label: formatHeader(key),

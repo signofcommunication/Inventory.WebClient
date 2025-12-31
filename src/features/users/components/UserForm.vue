@@ -65,7 +65,7 @@
 import { ref, watch, computed } from 'vue';
 import { useQuasar } from 'quasar';
 import { useUsersStore } from 'src/features/users/store';
-import { User, CreateUserPayload, UpdateUserPayload } from 'src/features/users/types';
+import type { User, CreateUserPayload, UpdateUserPayload } from 'src/features/users/types';
 
 const $q = useQuasar();
 const usersStore = useUsersStore();
@@ -94,8 +94,6 @@ const form = ref({
   role: '',
   isActive: true,
 });
-
-const formRef = ref();
 
 const loading = ref(false);
 
@@ -155,10 +153,10 @@ const onSubmit = async () => {
     }
     isVisible.value = false;
     emit('user-saved');
-  } catch (error: any) {
+  } catch (error: unknown) {
     $q.notify({
       type: 'negative',
-      message: error.message || 'Gagal menyimpan user',
+      message: (error as Error).message || 'Gagal menyimpan user',
     });
   } finally {
     loading.value = false;

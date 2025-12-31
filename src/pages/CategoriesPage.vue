@@ -59,7 +59,6 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { QTableProps } from 'quasar';
 import { useCategoriesStore } from 'src/features/categories/store';
 import type { Category, CategoryForm } from 'src/features/categories/types';
 
@@ -111,7 +110,7 @@ const confirmDelete = (category: Category) => {
 
 const deleteConfirmed = () => {
   if (currentCategory.value) {
-    store.deleteCategory(currentCategory.value.id);
+    void store.deleteCategory(currentCategory.value.id);
     showDeleteDialog.value = false;
     currentCategory.value = null;
   }
@@ -121,9 +120,9 @@ const onSubmit = async () => {
   submitting.value = true;
   try {
     if (isEdit.value && currentCategory.value) {
-      store.updateCategory(currentCategory.value.id, form.value);
+      await store.updateCategory(currentCategory.value.id, form.value);
     } else {
-      store.addCategory(form.value);
+      await store.addCategory(form.value);
     }
     showDialog.value = false;
     resetForm();

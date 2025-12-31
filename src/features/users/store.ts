@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'src/boot/axios';
+import { AxiosError } from 'axios';
 import type { User, CreateUserPayload, UpdateUserPayload } from './types';
 
 interface UsersState {
@@ -41,11 +42,10 @@ export const useUsersStore = defineStore('users', {
         this.users.push(response.data.data || response.data);
       } catch (error: unknown) {
         console.error('Error creating user:', error);
-        if (error instanceof Error && 'response' in error && error.response) {
-          const err = error as any;
-          if (err.response?.status === 403) {
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 403) {
             throw new Error('Forbidden: You do not have permission to create users.');
-          } else if (err.response?.status === 401) {
+          } else if (error.response?.status === 401) {
             throw new Error('Unauthorized: Please log in again.');
           } else {
             throw new Error('Failed to create user.');
@@ -65,11 +65,10 @@ export const useUsersStore = defineStore('users', {
         }
       } catch (error: unknown) {
         console.error('Error updating user:', error);
-        if (error instanceof Error && 'response' in error && error.response) {
-          const err = error as any;
-          if (err.response?.status === 403) {
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 403) {
             throw new Error('Forbidden: You do not have permission to update users.');
-          } else if (err.response?.status === 401) {
+          } else if (error.response?.status === 401) {
             throw new Error('Unauthorized: Please log in again.');
           } else {
             throw new Error('Failed to update user.');
@@ -89,11 +88,10 @@ export const useUsersStore = defineStore('users', {
         }
       } catch (error: unknown) {
         console.error('Error toggling user status:', error);
-        if (error instanceof Error && 'response' in error && error.response) {
-          const err = error as any;
-          if (err.response?.status === 403) {
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 403) {
             throw new Error('Forbidden: You do not have permission to change user status.');
-          } else if (err.response?.status === 401) {
+          } else if (error.response?.status === 401) {
             throw new Error('Unauthorized: Please log in again.');
           } else {
             throw new Error('Failed to change user status.');
@@ -110,11 +108,10 @@ export const useUsersStore = defineStore('users', {
         this.users = this.users.filter((user) => user.id !== id);
       } catch (error: unknown) {
         console.error('Error deleting user:', error);
-        if (error instanceof Error && 'response' in error && error.response) {
-          const err = error as any;
-          if (err.response?.status === 403) {
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 403) {
             throw new Error('Forbidden: You do not have permission to delete users.');
-          } else if (err.response?.status === 401) {
+          } else if (error.response?.status === 401) {
             throw new Error('Unauthorized: Please log in again.');
           } else {
             throw new Error('Failed to delete user.');

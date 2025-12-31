@@ -1,5 +1,11 @@
 <template>
-  <q-table :rows="stockOuts" :columns="columns" row-key="id" :loading="loading" class="q-mb-md">
+  <q-table
+    :rows="props.stockOuts"
+    :columns="columns"
+    row-key="id"
+    :loading="props.loading"
+    class="q-mb-md"
+  >
   </q-table>
 </template>
 

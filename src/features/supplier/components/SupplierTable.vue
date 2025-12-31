@@ -1,5 +1,11 @@
 <template>
-  <q-table :rows="suppliers" :columns="columns" row-key="id" :loading="loading" class="q-mb-md">
+  <q-table
+    :rows="props.suppliers"
+    :columns="columns"
+    row-key="id"
+    :loading="props.loading"
+    class="q-mb-md"
+  >
     <template #body-cell-actions="props">
       <q-td :props="props">
         <q-btn flat round icon="edit" color="primary" @click="editSupplier(props.row)" />

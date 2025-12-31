@@ -37,7 +37,7 @@ import { Notify } from 'quasar';
 import { useSupplierStore } from '../store';
 import SupplierTable from '../components/SupplierTable.vue';
 import SupplierForm from '../components/SupplierForm.vue';
-import type { SupplierForm as SupplierFormData } from '../types';
+import type { SupplierForm as SupplierFormData, Supplier } from '../types';
 
 const supplierStore = useSupplierStore();
 
@@ -50,7 +50,7 @@ const formData = reactive<SupplierFormData>({
 });
 
 onMounted(() => {
-  supplierStore.fetchSuppliers();
+  void supplierStore.fetchSuppliers();
 });
 
 const openAddDialog = () => {
@@ -61,7 +61,7 @@ const openAddDialog = () => {
   dialogOpen.value = true;
 };
 
-const openEditDialog = (supplier: any) => {
+const openEditDialog = (supplier: Supplier) => {
   isEdit.value = true;
   formData.name = supplier.name;
   formData.phone = supplier.phone || '';
@@ -80,16 +80,16 @@ const onSubmit = async (data: SupplierFormData) => {
       Notify.create({ type: 'positive', message: 'Supplier created successfully' });
     }
     closeDialog();
-  } catch (error) {
+  } catch {
     Notify.create({ type: 'negative', message: 'Error saving supplier' });
   }
 };
 
-const onDelete = async (supplier: any) => {
+const onDelete = async (supplier: Supplier) => {
   try {
     await supplierStore.deleteSupplier(supplier.id);
     Notify.create({ type: 'positive', message: 'Supplier deleted successfully' });
-  } catch (error) {
+  } catch {
     Notify.create({ type: 'negative', message: 'Error deleting supplier' });
   }
 };

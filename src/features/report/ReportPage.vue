@@ -72,6 +72,6 @@ const fetchReport = async () => {
 };
 
 onMounted(() => {
-  fetchReport();
+  void fetchReport();
 });
 </script>

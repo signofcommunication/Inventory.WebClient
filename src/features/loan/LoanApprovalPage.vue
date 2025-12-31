@@ -81,12 +81,12 @@ import { ref, onMounted } from 'vue';
 import { useLoanStore } from './store';
 import { Notify } from 'quasar';
 import type { Loan } from './types';
-import { useItemStore } from '../inventory/store';
+import { useItemsStore } from '../inventory/store';
 
 const loanStore = useLoanStore();
 const { loading, fetchPendingLoans, approveLoan, rejectLoan } = loanStore;
 
-const itemStore = useItemStore();
+const itemStore = useItemsStore();
 
 const columns = [
   { name: 'borrowerName', label: 'Peminjam', field: 'borrowerName', align: 'left' as const },

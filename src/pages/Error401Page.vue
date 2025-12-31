@@ -13,8 +13,5 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({
-  name: 'Error401Page',
-});
 // 401 Unauthorized page
 </script>
