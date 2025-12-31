@@ -14,5 +14,8 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'Error403Page',
+});
 // 403 Forbidden page
 </script>
