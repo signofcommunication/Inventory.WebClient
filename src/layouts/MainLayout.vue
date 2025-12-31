@@ -132,9 +132,45 @@ const menuGroups: MenuGroup[] = [
     title: 'Laporan',
     items: [
       {
-        title: 'Laporan',
-        link: '/report',
+        title: 'Reports',
+        link: '/reports',
         icon: 'bar_chart',
+        roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'],
+      },
+      {
+        title: 'Stock',
+        link: '/reports/stock',
+        icon: 'inventory',
+        roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'],
+      },
+      {
+        title: 'Transactions',
+        link: '/reports/transactions',
+        icon: 'swap_horiz',
+        roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'],
+      },
+      {
+        title: 'Loans',
+        link: '/reports/loans',
+        icon: 'assignment',
+        roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'],
+      },
+      {
+        title: 'Suppliers',
+        link: '/reports/suppliers',
+        icon: 'business',
+        roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'],
+      },
+      {
+        title: 'Summary',
+        link: '/reports/summary',
+        icon: 'pie_chart',
+        roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'],
+      },
+      {
+        title: 'User Activity',
+        link: '/reports/user-activity',
+        icon: 'people',
         roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'],
       },
     ],

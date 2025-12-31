@@ -27,7 +27,41 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/features/brands/pages/BrandPage.vue'),
         meta: { requiresAuth: true, roles: ['SUPERADMIN', 'ADMIN'] },
       },
-      { path: 'reports', component: () => import('pages/ReportsPage.vue') },
+      {
+        path: 'reports',
+        component: () => import('src/features/reports/pages/ReportsPage.vue'),
+        meta: { requiresAuth: true, roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'] },
+      },
+      {
+        path: 'reports/stock',
+        component: () => import('src/features/reports/pages/StockReportPage.vue'),
+        meta: { requiresAuth: true, roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'] },
+      },
+      {
+        path: 'reports/transactions',
+        component: () => import('src/features/reports/pages/TransactionReportPage.vue'),
+        meta: { requiresAuth: true, roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'] },
+      },
+      {
+        path: 'reports/loans',
+        component: () => import('src/features/reports/pages/LoanReportPage.vue'),
+        meta: { requiresAuth: true, roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'] },
+      },
+      {
+        path: 'reports/suppliers',
+        component: () => import('src/features/reports/pages/SupplierReportPage.vue'),
+        meta: { requiresAuth: true, roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'] },
+      },
+      {
+        path: 'reports/summary',
+        component: () => import('src/features/reports/pages/SummaryReportPage.vue'),
+        meta: { requiresAuth: true, roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'] },
+      },
+      {
+        path: 'reports/user-activity',
+        component: () => import('src/features/reports/pages/UserActivityReportPage.vue'),
+        meta: { requiresAuth: true, roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'] },
+      },
       {
         path: 'dashboard',
         component: () => import('src/features/dashboard/DashboardPage.vue'),
@@ -62,11 +96,6 @@ const routes: RouteRecordRaw[] = [
         path: 'transaction/out',
         component: () => import('src/features/transaction/pages/StockOutPage.vue'),
         meta: { roles: ['SUPERADMIN', 'ADMIN', 'PETUGAS_GUDANG'] },
-      },
-      {
-        path: 'report',
-        component: () => import('src/features/report/ReportPage.vue'),
-        meta: { roles: ['SUPERADMIN', 'ADMIN', 'PIMPINAN'] },
       },
       {
         path: 'change-password',
