@@ -75,25 +75,25 @@ const menuGroups: MenuGroup[] = [
         roles: [], // all
       },
       {
-        title: 'Kategori Barang',
+        title: 'Items Categories',
         link: '/categories',
         icon: 'category',
         roles: ['SUPERADMIN', 'ADMIN'],
       },
       {
-        title: 'Data Barang',
+        title: 'Data Items',
         link: '/inventory',
         icon: 'inventory',
         roles: ['SUPERADMIN', 'ADMIN'],
       },
       {
-        title: 'Data Supplier',
+        title: 'Data Suppliers',
         link: '/supplier',
         icon: 'business',
         roles: ['SUPERADMIN', 'ADMIN'],
       },
       {
-        title: 'Data Merek',
+        title: 'Data Brands',
         link: '/brands',
         icon: 'branding_watermark',
         roles: ['SUPERADMIN', 'ADMIN'],
@@ -101,7 +101,7 @@ const menuGroups: MenuGroup[] = [
     ],
   },
   {
-    title: 'Transaksi',
+    title: 'Transactions',
     items: [
       {
         title: 'Loan',
@@ -116,13 +116,13 @@ const menuGroups: MenuGroup[] = [
         roles: ['PIMPINAN'],
       },
       {
-        title: 'Barang Masuk',
+        title: 'Transaction In',
         link: '/transaction/in',
         icon: 'input',
         roles: ['SUPERADMIN', 'ADMIN', 'PETUGAS_GUDANG'],
       },
       {
-        title: 'Barang Keluar',
+        title: 'Transaction Out',
         link: '/transaction/out',
         icon: 'output',
         roles: ['SUPERADMIN', 'ADMIN', 'PETUGAS_GUDANG'],
@@ -130,7 +130,7 @@ const menuGroups: MenuGroup[] = [
     ],
   },
   {
-    title: 'Laporan',
+    title: 'Reports',
     items: [
       {
         title: 'Reports',
