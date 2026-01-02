@@ -1,8 +1,8 @@
 <template>
   <q-page class="q-pa-md">
     <div class="row justify-between items-center q-mb-md">
-      <h4>Manajemen User</h4>
-      <q-btn color="primary" icon="add" label="Tambah User" @click="showUserForm = true" />
+      <h4>User Management</h4>
+      <q-btn color="primary" icon="add" label="Add User" @click="showUserForm = true" />
     </div>
 
     <UserTable @edit-user="editUser" @delete-user="confirmDeleteUser" />
@@ -36,8 +36,8 @@ const editUser = (user: User) => {
 
 const confirmDeleteUser = async (user: User) => {
   const confirm = await ($q.dialog({
-    title: 'Konfirmasi Hapus',
-    message: `Apakah Anda yakin ingin menghapus user "${user.name}"?`,
+    title: 'Delete Confirmation',
+    message: `Are you sure you want to delete user "${user.name}"?`,
     cancel: true,
     persistent: true,
   }) as Promise<boolean>);
@@ -47,12 +47,12 @@ const confirmDeleteUser = async (user: User) => {
       await usersStore.deleteUser(user.id);
       $q.notify({
         type: 'positive',
-        message: 'User berhasil dihapus',
+        message: 'User deleted successfully',
       });
     } catch (error: unknown) {
       $q.notify({
         type: 'negative',
-        message: (error as Error).message || 'Gagal menghapus user',
+        message: (error as Error).message || 'Failed to delete user',
       });
     }
   }

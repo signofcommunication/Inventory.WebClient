@@ -1,12 +1,12 @@
 <template>
   <q-page class="q-pa-md">
     <div class="row justify-between items-center q-mb-md">
-      <h4>Manajemen Merek</h4>
+      <h4>Brand Management</h4>
       <q-btn
         v-if="canCreate"
         color="primary"
         icon="add"
-        label="Tambah Merek"
+        label="Add Brand"
         @click="showAddDialog = true"
       />
     </div>

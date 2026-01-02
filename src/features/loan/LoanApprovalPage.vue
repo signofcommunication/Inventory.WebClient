@@ -1,13 +1,13 @@
 <template>
   <q-page>
     <div class="q-pa-md">
-      <h5>Persetujuan Peminjaman Barang</h5>
+      <h5>Item Loan Approval</h5>
       <q-table
         :rows="loanStore.pendingLoans"
         :columns="columns"
         row-key="id"
         :loading="loading"
-        no-data-label="Tidak ada peminjaman pending"
+        no-data-label="No pending loans"
       >
         <template v-slot:body-cell-status="props">
           <q-td :props="props">
@@ -18,14 +18,14 @@
           <q-td :props="props">
             <q-btn
               color="positive"
-              label="Setujui"
+              label="Approve"
               size="sm"
               @click="confirmApprove(props.row)"
               :loading="loading"
             />
             <q-btn
               color="negative"
-              label="Tolak"
+              label="Reject"
               size="sm"
               @click="confirmReject(props.row)"
               :loading="loading"
@@ -49,11 +49,11 @@
     <q-dialog v-model="approveDialog">
       <q-card>
         <q-card-section class="row items-center">
-          <span class="q-ml-sm">Apakah Anda yakin ingin menyetujui peminjaman ini?</span>
+          <span class="q-ml-sm">Are you sure you want to approve this loan?</span>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat label="Batal" v-close-popup />
-          <q-btn flat label="Setujui" color="positive" @click="doApprove" :loading="loading" />
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Approve" color="positive" @click="doApprove" :loading="loading" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -62,14 +62,14 @@
     <q-dialog v-model="rejectDialog">
       <q-card>
         <q-card-section>
-          <div class="text-h6">Tolak Peminjaman</div>
+          <div class="text-h6">Reject Loan</div>
         </q-card-section>
         <q-card-section>
-          <q-input v-model="rejectionReason" label="Alasan Penolakan" type="textarea" rows="3" />
+          <q-input v-model="rejectionReason" label="Rejection Reason" type="textarea" rows="3" />
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat label="Batal" v-close-popup />
-          <q-btn flat label="Tolak" color="negative" @click="doReject" :loading="loading" />
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Reject" color="negative" @click="doReject" :loading="loading" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -89,14 +89,14 @@ const { loading, fetchPendingLoans, approveLoan, rejectLoan } = loanStore;
 const itemStore = useItemsStore();
 
 const columns = [
-  { name: 'borrowerName', label: 'Peminjam', field: 'borrowerName', align: 'left' as const },
-  { name: 'itemName', label: 'Barang', field: 'itemName', align: 'left' as const },
+  { name: 'borrowerName', label: 'Borrower', field: 'borrowerName', align: 'left' as const },
+  { name: 'itemName', label: 'Item', field: 'itemName', align: 'left' as const },
   { name: 'quantity', label: 'Quantity', field: 'quantity', align: 'left' as const },
-  { name: 'startDate', label: 'Tanggal Mulai', field: 'startDate', align: 'left' as const },
-  { name: 'endDate', label: 'Tanggal Selesai', field: 'endDate', align: 'left' as const },
-  { name: 'purpose', label: 'Keperluan', field: 'purpose', align: 'left' as const },
+  { name: 'startDate', label: 'Start Date', field: 'startDate', align: 'left' as const },
+  { name: 'endDate', label: 'End Date', field: 'endDate', align: 'left' as const },
+  { name: 'purpose', label: 'Purpose', field: 'purpose', align: 'left' as const },
   { name: 'status', label: 'Status', field: 'status', align: 'left' as const },
-  { name: 'actions', label: 'Aksi', field: '', align: 'left' as const },
+  { name: 'actions', label: 'Actions', field: '', align: 'left' as const },
 ];
 
 const getStatusColor = (status: string) => {
@@ -131,11 +131,10 @@ const doApprove = async () => {
   try {
     await approveLoan(selectedLoan.value.id);
     await itemStore.fetchItems(); // Refresh item quantities
-    await fetchPendingLoans(); // Refresh pending loans list
-    Notify.create({ type: 'positive', message: 'Peminjaman berhasil disetujui' });
+    await fetchPendingLoans(); // Refresh pending loans list    Notify.create({ type: 'positive', message: 'Loan approved successfully' });
     approveDialog.value = false;
   } catch {
-    Notify.create({ type: 'negative', message: 'Gagal menyetujui peminjaman' });
+    Notify.create({ type: 'negative', message: 'Failed to approve loan' });
   }
 };
 
@@ -148,12 +147,11 @@ const doReject = async () => {
   if (!selectedLoan.value) return;
   try {
     await rejectLoan(selectedLoan.value.id, rejectionReason.value);
-    await fetchPendingLoans(); // Refresh pending loans list
-    Notify.create({ type: 'positive', message: 'Peminjaman berhasil ditolak' });
+    await fetchPendingLoans(); // Refresh pending loans list    Notify.create({ type: 'positive', message: 'Loan rejected successfully' });
     rejectDialog.value = false;
     rejectionReason.value = '';
   } catch {
-    Notify.create({ type: 'negative', message: 'Gagal menolak peminjaman' });
+    Notify.create({ type: 'negative', message: 'Failed to reject loan' });
   }
 };
 

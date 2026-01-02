@@ -2,7 +2,7 @@
   <q-dialog v-model="isVisible" persistent>
     <q-card style="min-width: 400px">
       <q-card-section class="row items-center">
-        <div class="text-h6">{{ isEdit ? 'Edit User' : 'Tambah User' }}</div>
+        <div class="text-h6">{{ isEdit ? 'Edit User' : 'Add User' }}</div>
         <q-space />
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
@@ -136,7 +136,7 @@ const onSubmit = async () => {
       await usersStore.updateUser(props.user.id, payload);
       $q.notify({
         type: 'positive',
-        message: 'User berhasil diupdate',
+        message: 'User updated successfully',
       });
     } else {
       const payload: CreateUserPayload = {
@@ -148,7 +148,7 @@ const onSubmit = async () => {
       await usersStore.createUser(payload);
       $q.notify({
         type: 'positive',
-        message: 'User berhasil dibuat',
+        message: 'User created successfully',
       });
     }
     isVisible.value = false;
@@ -156,7 +156,7 @@ const onSubmit = async () => {
   } catch (error: unknown) {
     $q.notify({
       type: 'negative',
-      message: (error as Error).message || 'Gagal menyimpan user',
+      message: (error as Error).message || 'Failed to save user',
     });
   } finally {
     loading.value = false;

@@ -1,9 +1,9 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="text-h4 q-mb-lg">Barang Keluar</div>
+    <div class="text-h4 q-mb-lg">Stock Out</div>
     <div class="text-body1 q-mb-xl">Record outgoing goods</div>
 
-    <q-btn label="Tambah Barang Keluar" color="primary" @click="openAddDialog" class="q-mb-md" />
+    <q-btn label="Add Stock Out" color="primary" @click="openAddDialog" class="q-mb-md" />
 
     <StockOutTable :stockOuts="transactionStore.stockOuts" :loading="transactionStore.loading" />
 

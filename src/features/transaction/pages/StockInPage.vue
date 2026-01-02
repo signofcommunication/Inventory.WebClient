@@ -1,9 +1,9 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="text-h4 q-mb-lg">Barang Masuk</div>
+    <div class="text-h4 q-mb-lg">Stock In</div>
     <div class="text-body1 q-mb-xl">Record incoming goods</div>
 
-    <q-btn label="Tambah Barang Masuk" color="primary" @click="openAddDialog" class="q-mb-md" />
+    <q-btn label="Add Stock In" color="primary" @click="openAddDialog" class="q-mb-md" />
 
     <StockInTable :stockIns="transactionStore.stockIns" :loading="transactionStore.loading" />
 

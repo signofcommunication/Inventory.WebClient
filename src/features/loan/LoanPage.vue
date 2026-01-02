@@ -1,9 +1,9 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="text-h4 q-mb-lg">Peminjaman Barang</div>
+    <div class="text-h4 q-mb-lg">Item Loans</div>
     <div class="text-body1 q-mb-xl">Manage item loans</div>
 
-    <q-btn label="Tambah Peminjaman" color="primary" @click="openAddDialog" class="q-mb-md" />
+    <q-btn label="Add Loan" color="primary" @click="openAddDialog" class="q-mb-md" />
 
     <LoanTable
       :loans="loanStore.loans"

@@ -1,12 +1,12 @@
 <template>
   <q-page class="q-pa-md">
     <div class="row justify-between items-center q-mb-md">
-      <h4>Manajemen Barang</h4>
+      <h4>Item Management</h4>
       <q-btn
         v-if="canCreate"
         color="primary"
         icon="add"
-        label="Tambah Barang"
+        label="Add Item"
         @click="showAddDialog = true"
       />
     </div>

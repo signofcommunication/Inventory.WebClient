@@ -1,10 +1,10 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="text-h4 q-mb-lg">Kategori Barang</div>
+    <div class="text-h4 q-mb-lg">Item Categories</div>
 
     <q-btn
       v-if="canCreate"
-      label="Tambah Kategori"
+      label="Add Category"
       color="primary"
       @click="showForm = true"
       class="q-mb-md"
@@ -12,7 +12,7 @@
 
     <q-card>
       <q-card-section>
-        <div class="text-h6 q-mb-md">Daftar Kategori</div>
+        <div class="text-h6 q-mb-md">Category List</div>
         <CategoryTable @edit="editCategory" />
       </q-card-section>
     </q-card>
@@ -20,22 +20,22 @@
     <q-dialog v-model="showForm">
       <q-card style="min-width: 400px">
         <q-card-section>
-          <div class="text-h6">{{ editingCategory ? 'Edit Kategori' : 'Tambah Kategori' }}</div>
+          <div class="text-h6">{{ editingCategory ? 'Edit Category' : 'Add Category' }}</div>
         </q-card-section>
         <q-card-section>
           <q-input
             v-model="form.name"
-            label="Nama Kategori"
+            label="Category Name"
             outlined
             required
-            :rules="[(val) => !!val || 'Nama kategori wajib diisi']"
+            :rules="[(val) => !!val || 'Category name is required']"
           />
           <q-input v-model="form.description" label="Deskripsi" outlined type="textarea" />
         </q-card-section>
         <q-card-actions>
-          <q-btn flat label="Batal" @click="cancelForm" />
+          <q-btn flat label="Cancel" @click="cancelForm" />
           <q-btn
-            :label="editingCategory ? 'Update' : 'Simpan'"
+            :label="editingCategory ? 'Update' : 'Save'"
             color="primary"
             @click="saveForm"
             :loading="loading"

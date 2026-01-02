@@ -18,7 +18,13 @@
 
         <template v-for="group in visibleGroups" :key="group.title">
           <q-item-label header>{{ group.title }}</q-item-label>
-          <q-item v-for="link in group.items" :key="link.title" clickable tag="router-link" :to="link.link">
+          <q-item
+            v-for="link in group.items"
+            :key="link.title"
+            clickable
+            tag="router-link"
+            :to="link.link"
+          >
             <q-item-section avatar>
               <q-icon :name="link.icon" />
             </q-item-section>
@@ -60,7 +66,7 @@ const router = useRouter();
 
 const menuGroups: MenuGroup[] = [
   {
-    title: 'Manajemen',
+    title: 'Management',
     items: [
       {
         title: 'Dashboard',
@@ -98,13 +104,13 @@ const menuGroups: MenuGroup[] = [
     title: 'Transaksi',
     items: [
       {
-        title: 'Peminjaman',
+        title: 'Loan',
         link: '/loan',
         icon: 'assignment',
         roles: ['PEMINJAM'],
       },
       {
-        title: 'Persetujuan Peminjaman',
+        title: 'Loan Approval',
         link: '/loan/approval',
         icon: 'check_circle',
         roles: ['PIMPINAN'],
@@ -174,7 +180,7 @@ const menuGroups: MenuGroup[] = [
     title: 'Admin',
     items: [
       {
-        title: 'Manajemen User',
+        title: 'User Management',
         link: '/admin/users',
         icon: 'people',
         roles: ['SUPERADMIN'],
@@ -208,10 +214,10 @@ function logout() {
     title: 'Confirm Logout?',
     message: 'Are you sure want logout?',
     cancel: true,
-    persistent: true
+    persistent: true,
   }).onOk(() => {
     authStore.logout();
     void router.push('/login');
-  })
+  });
 }
 </script>

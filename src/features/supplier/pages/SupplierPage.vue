@@ -3,7 +3,7 @@
     <div class="text-h4 q-mb-lg">Data Supplier</div>
     <div class="text-body1 q-mb-xl">Manage supplier data</div>
 
-    <q-btn label="Tambah Supplier" color="primary" @click="openAddDialog" class="q-mb-md" />
+    <q-btn label="Add Supplier" color="primary" @click="openAddDialog" class="q-mb-md" />
 
     <SupplierTable
       :suppliers="supplierStore.suppliers"
