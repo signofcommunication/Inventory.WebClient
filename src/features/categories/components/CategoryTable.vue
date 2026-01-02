@@ -54,6 +54,12 @@ const canDelete = computed(() => hasRole(['SUPERADMIN']));
 
 const columns = [
   {
+    name: 'code',
+    label: 'Code',
+    align: 'left' as const,
+    field: 'code',
+  },
+  {
     name: 'name',
     label: 'Name',
     align: 'left' as const,

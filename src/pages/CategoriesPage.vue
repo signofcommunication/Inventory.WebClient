@@ -25,6 +25,7 @@
 
         <q-card-section>
           <q-form @submit="onSubmit" class="q-gutter-md">
+            <q-input v-if="isEdit" v-model="form.code" label="Code" outlined :disable="true" />
             <q-input v-model="form.name" label="Name" required outlined />
             <q-input v-model="form.description" label="Description" type="textarea" outlined />
             <div class="row justify-end q-gutter-sm">
@@ -75,12 +76,14 @@ const isEdit = ref(false);
 const currentCategory = ref<Category | null>(null);
 
 const form = ref<CategoryForm>({
+  code: '',
   name: '',
   description: '',
 });
 
 const columns = [
   { name: 'id', label: 'ID', field: 'id', align: 'left' as const },
+  { name: 'code', label: 'Code', field: 'code', align: 'left' as const },
   { name: 'name', label: 'Name', field: 'name', align: 'left' as const },
   { name: 'description', label: 'Description', field: 'description', align: 'left' as const },
   { name: 'actions', label: 'Actions', field: '', align: 'center' as const },
@@ -88,6 +91,7 @@ const columns = [
 
 const resetForm = () => {
   form.value = {
+    code: '',
     name: '',
     description: '',
   };
@@ -97,8 +101,9 @@ const editCategory = (category: Category) => {
   isEdit.value = true;
   currentCategory.value = category;
   form.value = {
+    code: category.code || '',
     name: category.name,
-    description: category.description,
+    description: category.description || '',
   };
   showDialog.value = true;
 };
@@ -122,7 +127,7 @@ const onSubmit = async () => {
     if (isEdit.value && currentCategory.value) {
       await store.updateCategory(currentCategory.value.id, form.value);
     } else {
-      await store.addCategory(form.value);
+      await store.createCategory(form.value);
     }
     showDialog.value = false;
     resetForm();

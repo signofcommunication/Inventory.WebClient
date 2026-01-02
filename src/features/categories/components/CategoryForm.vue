@@ -7,6 +7,15 @@
     <q-card-section>
       <q-form @submit="onSubmit" class="q-gutter-md">
         <q-input
+          v-if="isEdit"
+          v-model="form.code"
+          label="Code *"
+          outlined
+          :rules="[(val) => (val && val.length > 0) || 'Code is required']"
+          :disable="true"
+        />
+
+        <q-input
           v-model="form.name"
           label="Name *"
           outlined
@@ -44,7 +53,7 @@ import { hasRole } from '../../../shared/permissions';
 import type { CategoryForm as CategoryFormType } from '../types';
 
 interface Props {
-  category?: { id: number; name: string; description?: string } | null;
+  category?: { id: number; code: string; name: string; description?: string } | null;
   isEdit?: boolean;
 }
 
@@ -60,6 +69,7 @@ const emit = defineEmits<{
 const categoriesStore = useCategoriesStore();
 
 const form = ref<CategoryFormType>({
+  code: '',
   name: '',
   description: '',
 });
@@ -77,9 +87,11 @@ watch(
   () => props.category,
   (newCategory) => {
     if (newCategory) {
+      form.value.code = newCategory.code;
       form.value.name = newCategory.name;
       form.value.description = newCategory.description || '';
     } else {
+      form.value.code = '';
       form.value.name = '';
       form.value.description = '';
     }

@@ -24,13 +24,20 @@
         </q-card-section>
         <q-card-section>
           <q-input
+            v-if="editingCategory"
+            v-model="form.code"
+            label="Category Code"
+            outlined
+            :disable="true"
+          />
+          <q-input
             v-model="form.name"
             label="Category Name"
             outlined
             required
             :rules="[(val) => !!val || 'Category name is required']"
           />
-          <q-input v-model="form.description" label="Deskripsi" outlined type="textarea" />
+          <q-input v-model="form.description" label="Description" outlined type="textarea" />
         </q-card-section>
         <q-card-actions>
           <q-btn flat label="Cancel" @click="cancelForm" />
@@ -61,6 +68,7 @@ const loading = computed(() => categoriesStore.loading);
 const canCreate = computed(() => hasRole(['SUPERADMIN', 'ADMIN']));
 
 const form = ref({
+  code: '',
   name: '',
   description: '',
 });
@@ -75,6 +83,7 @@ onMounted(async () => {
 
 const editCategory = (category: Category) => {
   editingCategory.value = category;
+  form.value.code = category.code;
   form.value.name = category.name;
   form.value.description = category.description || '';
   showForm.value = true;
@@ -96,6 +105,7 @@ const saveForm = async () => {
 const cancelForm = () => {
   showForm.value = false;
   editingCategory.value = null;
+  form.value.code = '';
   form.value.name = '';
   form.value.description = '';
 };
