@@ -14,8 +14,6 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label header> Menu Navigasi </q-item-label>
-
         <template v-for="group in visibleGroups" :key="group.title">
           <q-item-label header>{{ group.title }}</q-item-label>
           <q-item
