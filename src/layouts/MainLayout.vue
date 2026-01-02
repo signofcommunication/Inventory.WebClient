@@ -18,13 +18,7 @@
 
         <template v-for="group in visibleGroups" :key="group.title">
           <q-item-label header>{{ group.title }}</q-item-label>
-          <q-item
-            v-for="link in group.items"
-            :key="link.title"
-            clickable
-            tag="router-link"
-            :to="link.link"
-          >
+          <q-item v-for="link in group.items" :key="link.title" clickable tag="router-link" :to="link.link">
             <q-item-section avatar>
               <q-icon :name="link.icon" />
             </q-item-section>
@@ -47,6 +41,7 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from 'src/features/auth/store';
 import { hasRole } from 'src/shared/permissions';
+import { Dialog } from 'quasar';
 
 interface MenuItem {
   title: string;
@@ -209,7 +204,14 @@ function toggleLeftDrawer() {
 }
 
 function logout() {
-  authStore.logout();
-  void router.push('/login');
+  Dialog.create({
+    title: 'Confirm Logout?',
+    message: 'Are you sure want logout?',
+    cancel: true,
+    persistent: true
+  }).onOk(() => {
+    authStore.logout();
+    void router.push('/login');
+  })
 }
 </script>
