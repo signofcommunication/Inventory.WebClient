@@ -1,23 +1,9 @@
 <template>
-  <q-table
-    :rows="items"
-    :columns="columns"
-    row-key="id"
-    :loading="loading"
-    :pagination="{ rowsPerPage: 10 }"
-  >
+  <q-table :rows="items" :columns="columns" row-key="id" :loading="loading" :pagination="{ rowsPerPage: 10 }">
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">
         <div class="row q-gutter-xs">
-          <q-btn
-            v-if="canEdit"
-            icon="edit"
-            size="sm"
-            color="primary"
-            flat
-            round
-            @click="onEdit(props.row)"
-          />
+          <q-btn v-if="canEdit" icon="edit" size="sm" color="primary" flat round @click="onEdit(props.row)" />
         </div>
       </q-td>
     </template>
@@ -28,7 +14,6 @@
 import { computed } from 'vue';
 import { useItemsStore } from '../store';
 import { useBrandsStore } from '../../brands/store';
-import { useCategoriesStore } from '../../categories/store';
 import { hasRole } from '../../../shared/permissions';
 import type { Item } from '../types';
 
@@ -38,7 +23,6 @@ const emit = defineEmits<{
 
 const itemsStore = useItemsStore();
 const brandsStore = useBrandsStore();
-const categoriesStore = useCategoriesStore();
 
 const items = computed(() => itemsStore.items);
 const loading = computed(() => itemsStore.loading);
@@ -48,11 +32,6 @@ const canEdit = computed(() => hasRole(['SUPERADMIN', 'ADMIN']));
 const getBrandName = (brandId: string) => {
   const brand = brandsStore.getBrandById(brandId);
   return brand ? brand.name : 'Unknown';
-};
-
-const getCategoryName = (categoryId: string) => {
-  const category = categoriesStore.getCategoryById(Number(categoryId));
-  return category ? category.name : 'Unknown';
 };
 
 const columns = [
@@ -79,8 +58,8 @@ const columns = [
     name: 'category',
     label: 'Category',
     align: 'left' as const,
-    field: 'categoryId',
-    format: (val: string) => getCategoryName(val),
+    field: 'category',
+    format: (val: string) => (val.name),
   },
   {
     name: 'createdAt',
