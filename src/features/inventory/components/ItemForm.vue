@@ -40,6 +40,27 @@
           :disable="!canEdit"
         />
 
+        <q-file
+          v-model="selectedFile"
+          label="Item Image *"
+          outlined
+          accept="image/*"
+          max-file-size="2097152"
+          :rules="[(val) => !!val || 'Image is required']"
+          :disable="!canEdit"
+        >
+          <template #file="{ file }">
+            <q-chip
+              :removable="canEdit"
+              @remove="selectedFile = null"
+              text-color="white"
+              color="primary"
+            >
+              {{ file.name }}
+            </q-chip>
+          </template>
+        </q-file>
+
         <q-input
           v-if="isEdit && currentItem"
           v-model="currentItem.itemCode"
@@ -93,7 +114,10 @@ const form = ref<ItemFormType>({
   name: '',
   brandId: '',
   categoryId: 0,
+  imageUrl: '',
 });
+
+const selectedFile = ref<File | null>(null);
 
 const canEdit = computed(() => {
   if (props.isEdit) {
@@ -120,11 +144,13 @@ watch(
       form.value.name = newItem.name;
       form.value.brandId = newItem.brandId;
       form.value.categoryId = newItem.categoryId;
+      form.value.imageUrl = newItem.imageUrl;
       currentItem.value = newItem;
     } else {
       form.value.name = '';
       form.value.brandId = '';
       form.value.categoryId = 0;
+      form.value.imageUrl = '';
       currentItem.value = null;
     }
   },
@@ -135,7 +161,16 @@ const onSubmit = async () => {
   if (props.isEdit && props.item) {
     await itemsStore.updateItem(props.item.id, form.value);
   } else {
-    await itemsStore.createItem(form.value);
+    if (selectedFile.value) {
+      const formData = new FormData();
+      formData.append('name', form.value.name);
+      formData.append('brandId', form.value.brandId);
+      formData.append('categoryId', form.value.categoryId.toString());
+      formData.append('image', selectedFile.value);
+      await itemsStore.createItem(formData);
+    } else {
+      await itemsStore.createItem(form.value);
+    }
   }
   emit('saved');
 };

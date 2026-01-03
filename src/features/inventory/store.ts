@@ -26,10 +26,12 @@ export const useItemsStore = defineStore('items', () => {
     }
   };
 
-  const createItem = async (payload: ItemForm) => {
+  const createItem = async (payload: ItemForm | FormData) => {
     loading.value = true;
     try {
-      const response = await api.post('/items', payload);
+      const config =
+        payload instanceof FormData ? { headers: { 'Content-Type': 'multipart/form-data' } } : {};
+      const response = await api.post('/items', payload, config);
       const newItem = response.data.data || response.data;
       items.value.push(newItem);
       Notify.create({

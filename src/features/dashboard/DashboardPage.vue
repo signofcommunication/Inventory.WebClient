@@ -16,7 +16,7 @@
         </q-card-section>
       </q-card>
 
-      <q-card class="col-12 col-md-3">
+      <q-card class="col-12 col-md-4">
         <q-card-section>
           <div class="row items-center q-gutter-sm">
             <q-icon name="mdi-handshake" size="2rem" color="secondary" />
@@ -28,20 +28,7 @@
         </q-card-section>
       </q-card>
 
-      <q-card class="col-12 col-md-3">
-        <q-card-section>
-          <div class="row items-center q-gutter-sm">
-            <q-icon name="mdi-alert-circle" size="2rem" color="warning" />
-            <div>
-              <div class="text-h6">Low Stock Items</div>
-              <div class="text-h4 text-warning">{{ lowStockItems }}</div>
-              <div class="text-caption">Items with quantity &lt; 5</div>
-            </div>
-          </div>
-        </q-card-section>
-      </q-card>
-
-      <q-card class="col-12 col-md-3">
+      <q-card class="col-12 col-md-4">
         <q-card-section>
           <div class="row items-center q-gutter-sm">
             <q-icon name="mdi-truck" size="2rem" color="info" />
@@ -83,7 +70,6 @@ const totalItems = computed(() => itemsStore.items.length);
 const activeLoans = computed(
   () => loanStore.loans.filter((loan) => loan.status === 'APPROVED').length,
 );
-const lowStockItems = computed(() => itemsStore.items.filter((item) => item.quantity < 5).length);
 const totalSuppliers = computed(() => supplierStore.suppliers.length);
 
 const chartOptions = computed(() => ({
@@ -108,7 +94,7 @@ const chartOptions = computed(() => ({
     colors: ['transparent'],
   },
   xaxis: {
-    categories: ['Total Items', 'Active Loans', 'Low Stock Items', 'Total Suppliers'],
+    categories: ['Total Items', 'Active Loans', 'Total Suppliers'],
   },
   yaxis: {
     title: {
@@ -118,7 +104,7 @@ const chartOptions = computed(() => ({
   fill: {
     opacity: 1,
   },
-  colors: ['#1976d2', '#dc004e', '#ff9800', '#2196f3'],
+  colors: ['#1976d2', '#dc004e', '#2196f3'],
   tooltip: {
     y: {
       formatter: (val: number) => val.toString(),
@@ -129,7 +115,7 @@ const chartOptions = computed(() => ({
 const chartSeries = computed(() => [
   {
     name: 'Count',
-    data: [totalItems.value, activeLoans.value, lowStockItems.value, totalSuppliers.value],
+    data: [totalItems.value, activeLoans.value, totalSuppliers.value],
   },
 ]);
 </script>
